@@ -4,10 +4,49 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css">
     <title>frontend</title>
   </head>
+  <header>
+    <i align="left" class="fa-regular fa-house"></i>
+    <button type="button" class="nav-btn" align="right">Bejelentkezés/Regisztráció</button> 
+    <script>
+    const buttons = document.querySelectorAll('.nav-btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+    </script>
+  </header>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <section type=frontWords1>
+      <h2>Tanulás játékosan</h2>
+      <p>
+        „A tudás akkor ragad meg igazán, ha élménnyé válik.”
+        Oldalunk célja, hogy a tanulás ne csak kötelesség legyen, hanem kaland is. A kvízek segítségével a diákok játékos formában mérhetik fel tudásukat, a tanárok pedig könnyedén követhetik a fejlődésüket – mindezt digitális, modern környezetben.
+      </p>
+    </section>
+    <section type=frontWords2>
+      <h2>Kvízek minden témában – egy kattintással</h2>
+      <p>
+        Legyen szó történelemről, irodalomról, matematikáról vagy akár földrajzról, néhány perc alatt összeállítható egy teljes kvíz. Választható feleletválasztós, igaz-hamis, párosítós vagy nyílt végű kérdésforma is. A rendszer automatikusan értékel – így a tanárok időt spórolnak, a diákok pedig azonnali visszajelzést kapnak.
+      </p>
+    </section>
+    <section type=frontWords3>
+      <h2>Motiváció, verseny és sikerélmény</h2>
+      <p>
+        A diákok egyéni pontszámokat, ranglistát és akár jelvényeket is gyűjthetnek, hogy a tanulás ne csak hasznos, hanem izgalmas is legyen.
+      </p>
+      <p>
+        Hiszünk benne, hogy a tudás nem száraz adat, hanem egy közösen felfedezhető világ – és minden jó felfedezés egy jó kérdéssel kezdődik.
+      </p>
+    </section>
   </body>
+  <footer>
+    <p>© 2025 Kvízoldal, Adatvédelem, Kapcsolat linkek</p>
+  </footer>
 </html>
