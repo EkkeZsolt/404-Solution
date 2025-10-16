@@ -1,0 +1,35 @@
+.frontWords {
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 800px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease;
+
+  &[data-type="frontWords1"] {
+    background-color: #fef9e7;
+  }
+
+  &[data-type="frontWords2"] {
+    background-color: #e7f5fe;
+  }
+
+  &[data-type="frontWords3"] {
+    background-color: #e9f7ef;
+  }
+
+  h2 {
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: #555;
+    line-height: 1.6;
+    margin: 0.5rem 0;
+  }
+}
