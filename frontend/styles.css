@@ -1,0 +1,29 @@
+button:hover {
+  transition: 0.3s;
+  transform: scale(1.05);
+}
+button.active {
+  color: purple;
+}
+section {
+  opacity: 0;
+  transform: translate(20px);
+  transition: fadeInUp 1s forwards;
+}
+
+section.nth-of-type(1) {
+  animation-delay: 0.2s;
+}
+
+section.nth-of-type(2) {
+  animation-delay: 0.8s;
+}
+
+section.nth-of-type(3) {
+  animation-delay: 1.4s;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to {opacity: 1; transform: translateY(0); }
+}
