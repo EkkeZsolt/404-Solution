@@ -1,5 +1,5 @@
 import './App.scss'
-import './index.css';
+import './index.scss';
 import Hero from './hero/Hero';
 
 function App() {
