@@ -1,4 +1,3 @@
-// src/components/Hero.tsx
 import React, { useEffect, useState, useRef } from "react";
 import "./Hero.scss";
 
@@ -33,7 +32,7 @@ const slides: Slide[] = [
 const Hero: React.FC = () => {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const slideCount = slides.length;
 
   useEffect(() => {
