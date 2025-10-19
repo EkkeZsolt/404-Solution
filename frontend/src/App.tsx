@@ -2,8 +2,8 @@ import React from 'react'
 import { useState } from 'react'
 import Quiz from './QuizApp/Quiz'
 import './App.scss'
-import Hero from './components/Hero';
 import './index.css';
+import Hero from './hero/Hero';
 
 function App() {
   return (
