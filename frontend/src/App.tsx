@@ -5,8 +5,8 @@ import Footer from './footer/Footer'
 import FrontWords from './front-words/FrontWords'
 import Header from './header/Header'
 import './App.scss'
-import Hero from './components/Hero';
 import './index.css';
+import Hero from './hero/Hero';
 
 function App() {
   return (
