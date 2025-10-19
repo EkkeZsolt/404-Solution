@@ -1,18 +1,25 @@
+import React from 'react'
 import { useState } from 'react'
 import Quiz from './QuizApp/Quiz'
 import './App.scss'
+import Hero from './components/Hero';
+import './index.css';
 
 function App() {
-
-
   return (
     <>
-      <div>
-        <h1>LOL</h1>
-         <Quiz />  
-      </div>
+      <header className="site-header">
+        <div className="logo">L</div>
+        <nav className="auth">
+          <button className="auth-btn">Bejelentkezés/Regisztráció</button>
+        </nav>
+      </header>
+
+      <main>
+        <Hero />
+      </main>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
