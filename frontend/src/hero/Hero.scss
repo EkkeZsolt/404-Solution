@@ -1,0 +1,116 @@
+.hero {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  min-height: 480px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 800ms ease, transform 1200ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 1;
+}
+.hero-overlay {
+  background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.45));
+  color: #fff;
+  padding: 2.5rem;
+  text-align: center;
+  border-radius: 8px;
+  max-width: 900px;
+}
+
+.hero-title {
+  font-size: 2.2rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin: 0.25rem 0;
+  opacity: 0.95;
+}
+
+.hero-slogan {
+  font-size: 1rem;
+  margin: 0.25rem 0 1rem 0;
+  color: #f0f0f0;
+}
+
+.join-btn {
+  background: linear-gradient(90deg, #ff6a00, #ff3d00);
+  border: none;
+  color: white;
+  padding: 0.85rem 1.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  box-shadow: 0 6px 18px rgba(255, 77, 0, 0.25);
+}
+
+.join-btn:hover, .join-btn:focus {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(255, 77, 0, 0.34);
+  outline: none;
+}
+
+
+.hero-controls {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-prev, .hero-next {
+  background: rgba(0,0,0,0.45);
+  border: none;
+  color: #fff;
+  font-size: 1.6rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.hero-dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.45);
+  border: none;
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.hero-dots .dot-active {
+  background: #fff;
+  transform: scale(1.18);
+}
+
+@media (max-width: 768px) {
+  .hero { height: 56vh; min-height: 360px; }
+  .hero-title { font-size: 1.6rem; }
+  .hero-overlay { padding: 1.6rem; }
+}
