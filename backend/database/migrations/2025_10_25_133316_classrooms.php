@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('classrooms', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('owner_id')
+                  ->constrained('teachers')
+                  ->onDelete('cascade');
+            $table->string('name');
+            $table->string('visibility', 10)->default('private');
+            $table->char('classroom_code', 8)->unique();
+        });
+
+        DB::statement('PRAGMA foreign_keys = ON;');
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('classrooms');
+    }
+};
