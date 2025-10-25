@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeacherClassroomController;
 
 // routes/api.php
-Route::get('/teachers/{teacher}/classrooms', [TeacherClassroomController::class, 'index']);
+Route::get('/teachers/dasboard', [TeacherClassroomController::class, 'getDashboard']);
 
-
+Route::get('/teachers/classroom', [TeacherClassroomController::class, 'getQuizzesWithResultCount']);
 
