@@ -27,6 +27,10 @@ class Classroom extends Model
     {
         return $this->belongsTo(Teacher::class, 'owner_id');
     }
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(Teacher::class, 'owner_id');
+    }
 
     public function students(): HasMany
     {

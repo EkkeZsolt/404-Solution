@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Teacher;
 use App\Models\Classroom;
 use App\Models\Student;
@@ -10,58 +9,84 @@ use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\Result;
 use App\Models\DetailedResult;
+use Illuminate\Database\Seeder;
 
 class AllDataSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        // 1. Tanárok (10 tanár)
+        // 1️⃣ Create 10 teachers
         Teacher::factory()
-            ->count(10)                     // 10 tanár
-            ->has(
-                Classroom::factory()      // minden tanárhoz több osztály
-                    ->count(5)                 // 5 osztály/tanár
-                    ->public()                 // állapot: public
-                    ->has(Student::factory()->count(15))   // 15 diák/osztályonként
-            )
+            ->count(10)
             ->create()
-            ->each(function ($teacher) {
-                // 2. Quiz-ek és kérdések minden osztálynak
-                foreach ($teacher->classrooms as $classroom) {
+            ->each(function (Teacher $teacher) {
+
+                /* ------------------------------------------------------------------
+                 * 2️⃣ Create a random number of classrooms for this teacher
+                 * ------------------------------------------------------------------ */
+                $classrooms = Classroom::factory()
+                    ->count(rand(3, 7))          // 3–7 per teacher
+                    ->for($teacher)
+                    ->public()                   // state: public
+                    ->create();
+
+                /* ------------------------------------------------------------------
+                 * 3️⃣ For each classroom create a random number of students (20‑30)
+                 * ------------------------------------------------------------------ */
+                foreach ($classrooms as $room) {
+                    Student::factory()
+                        ->count(rand(20, 30))
+                        ->for($room)
+                        ->create();
+                }
+
+                /* ------------------------------------------------------------------
+                 * 4️⃣ Create quizzes & questions for every classroom
+                 * ------------------------------------------------------------------ */
+                foreach ($classrooms as $classroom) {
+
+                    // make sure the owner_id is set (teacher owns the class)
                     $classroom->owner_id = $teacher->id;
                     $classroom->save();
-                    // 3. Quiz (1–3 quiz per osztály)
-                    $quizCount = rand(1, 3);
-                    for ($i = 0; $i < $quizCount; $i++) {
+
+                    // a) 1–3 quizzes per classroom
+                    for ($i = 0; $i < rand(1, 3); $i++) {
                         $quiz = Quiz::factory()
                             ->for($classroom)
                             ->create();
 
-                        // 4. Kérdések (5–10 kérdés/quiz)
+                        // b) 5–10 questions per quiz
                         Question::factory()
                             ->count(rand(5, 10))
                             ->for($quiz)
                             ->create();
                     }
 
-                    // 5. Result + DetailedResult
-                    // minden diák próbálkozik a quiz-ekkel
-                    foreach ($classroom->students as $student) {
+                    /* ------------------------------------------------------------------
+                     * 5️⃣ Results & DetailedResults – every student attempts every quiz
+                     * ------------------------------------------------------------------ */
+                    // Load students once to avoid N+1 queries
+                    $students = $classroom->students()->get();
+
+                    foreach ($students as $student) {
                         foreach ($classroom->quizzes as $quiz) {
 
-                            // 1. Result
+                            // 5.1 Result
                             $result = Result::factory()
                                 ->for($quiz)
                                 ->for($student)
                                 ->create();
 
-                            // 2. DetailedResults – one per question (pick a random subset)
-                            $questions = $quiz->questions()->inRandomOrder()->take(rand(3, 7))->get();
+                            // 5.2 DetailedResults – pick a random subset of questions
+                            $questions = $quiz->questions()
+                                ->inRandomOrder()
+                                ->take(rand(3, 7))
+                                ->get();
 
                             foreach ($questions as $question) {
                                 DetailedResult::factory()
-                                    ->for($result)          // sets result_id
-                                    ->state(['question_id' => $question->id])   // manual FK
+                                    ->for($result)
+                                    ->state(['question_id' => $question->id])
                                     ->create();
                             }
                         }
@@ -69,11 +94,13 @@ class AllDataSeeder extends Seeder
                 }
             });
 
-        $this->command->info('✅ All data seeded! (≈ ' . Teacher::count() . ' teachers, ' .
-            Classroom::count() . ' classrooms, ' .
-            Student::count() . ' students, ' .
-            Quiz::count() . ' quizzes, ' .
-            Question::count() . ' questions, ' .
-            Result::count() . ' results)');
+        // Quick summary
+        $this->command->info('✅ All data seeded! (≈ '
+            . Teacher::count() . ' teachers, '
+            . Classroom::count() . ' classrooms, '
+            . Student::count() . ' students, '
+            . Quiz::count() . ' quizzes, '
+            . Question::count() . ' questions, '
+            . Result::count() . ' results)');
     }
 }
