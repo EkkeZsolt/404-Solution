@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_teacher');
             $table->foreignId('classroom_id')
                   ->nullable()
                   ->constrained('classrooms')
