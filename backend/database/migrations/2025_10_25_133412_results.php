@@ -8,16 +8,21 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('results', function (Blueprint $table) {
+         Schema::create('results', function (Blueprint $table) {
             $table->id();
+
+            // Quiz FK – ez rendben van
             $table->foreignId('quiz_id')
-                  ->constrained('quizzes')
+                  ->constrained()          // quizzes.id
                   ->onDelete('cascade');
+
+            // Student FK – most a users.tábla
             $table->foreignId('student_id')
-                  ->constrained('students')
+                  ->constrained('users')   // users.id
                   ->onDelete('cascade');
         });
 
+        // Ha SQLite‑t használsz, engedélyezd a foreign key-ket
         DB::statement('PRAGMA foreign_keys = ON;');
     }
 

@@ -6,21 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
-        Schema::create('joinclassroom', function (Blueprint $table) {
-            $table->char('classroom_code', 8);
-            $table->foreignId('student_id')
-                  ->constrained('students')
+        Schema::create('join_classroom', function (Blueprint $table) {
+            $table->id();                     // optional, but handy for debugging
+            $table->foreignId('user_id')
+                  ->constrained()
                   ->onDelete('cascade');
-            $table->primary(['classroom_code', 'student_id']);
-        });
+            $table->foreignId('classroom_id')
+                  ->constrained()
+                  ->onDelete('cascade');
 
-        DB::statement('PRAGMA foreign_keys = ON;');
+            $table->timestamps();
+        });
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('joinclassroom');
+        Schema::dropIfExists('join_classroom');
     }
 };

@@ -28,7 +28,8 @@ class Result extends Model
 
     public function student(): BelongsTo
     {
-        return $this->belongsTo(Student::class);
+        // Point to the User model, not a non‑existent Student model
+        return $this->belongsTo(User::class, 'student_id');
     }
 
     public function detailedResults(): HasMany

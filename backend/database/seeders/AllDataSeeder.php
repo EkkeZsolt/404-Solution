@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Teacher;
+use App\Models\User;
 use App\Models\Classroom;
-use App\Models\Student;
 use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\Result;
@@ -15,39 +14,38 @@ class AllDataSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1️⃣ Create 10 teachers
-        Teacher::factory()
+        // ------------------------------------------------------------------
+        // 1️⃣ Create 10 teachers (users with role = 'tanar')
+        // ------------------------------------------------------------------
+        User::factory()
             ->count(10)
+            ->state(['role' => 'tanar'])
             ->create()
-            ->each(function (Teacher $teacher) {
+            ->each(function (User $teacher) {
 
                 /* ------------------------------------------------------------------
                  * 2️⃣ Create a random number of classrooms for this teacher
                  * ------------------------------------------------------------------ */
                 $classrooms = Classroom::factory()
                     ->count(rand(3, 7))          // 3–7 per teacher
-                    ->for($teacher)
-                    ->public()                   // state: public
+                    ->for($teacher, 'owner')     // owner_id → users.id
                     ->create();
 
                 /* ------------------------------------------------------------------
                  * 3️⃣ For each classroom create a random number of students (20‑30)
                  * ------------------------------------------------------------------ */
                 foreach ($classrooms as $room) {
-                    Student::factory()
+                    User::factory()
                         ->count(rand(20, 30))
-                        ->for($room)
-                        ->create();
+                        ->state(['role' => 'diak'])
+                        ->create()
+                        ->each(fn (User $student) => $room->students()->attach($student));
                 }
 
                 /* ------------------------------------------------------------------
                  * 4️⃣ Create quizzes & questions for every classroom
                  * ------------------------------------------------------------------ */
                 foreach ($classrooms as $classroom) {
-
-                    // make sure the owner_id is set (teacher owns the class)
-                    $classroom->owner_id = $teacher->id;
-                    $classroom->save();
 
                     // a) 1–3 quizzes per classroom
                     for ($i = 0; $i < rand(1, 3); $i++) {
@@ -65,8 +63,7 @@ class AllDataSeeder extends Seeder
                     /* ------------------------------------------------------------------
                      * 5️⃣ Results & DetailedResults – every student attempts every quiz
                      * ------------------------------------------------------------------ */
-                    // Load students once to avoid N+1 queries
-                    $students = $classroom->students()->get();
+                    $students = $classroom->students()->get();   // egy lekérdezés
 
                     foreach ($students as $student) {
                         foreach ($classroom->quizzes as $quiz) {
@@ -74,7 +71,7 @@ class AllDataSeeder extends Seeder
                             // 5.1 Result
                             $result = Result::factory()
                                 ->for($quiz)
-                                ->for($student)
+                                ->for($student, 'student')   // user_id → users.id
                                 ->create();
 
                             // 5.2 DetailedResults – pick a random subset of questions
@@ -96,9 +93,9 @@ class AllDataSeeder extends Seeder
 
         // Quick summary
         $this->command->info('✅ All data seeded! (≈ '
-            . Teacher::count() . ' teachers, '
+            . User::where('role', 'tanar')->count() . ' teachers, '
             . Classroom::count() . ' classrooms, '
-            . Student::count() . ' students, '
+            . User::where('role', 'diak')->count() . ' students, '
             . Quiz::count() . ' quizzes, '
             . Question::count() . ' questions, '
             . Result::count() . ' results)');

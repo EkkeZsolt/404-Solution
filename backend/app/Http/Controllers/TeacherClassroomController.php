@@ -5,15 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Teacher;
 use App\Models\Classroom;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class TeacherClassroomController extends Controller
 {
-    /**
-     * Return all classrooms that belong to a teacher **plus** the number of students in each.
-     *
-     * @param  int  $teacherId
-     * @return \Illuminate\Http\JsonResponse
-     */
+    
     public function getDashboard(Request $request)
     {
 
@@ -37,13 +34,7 @@ class TeacherClassroomController extends Controller
     }
 
 
-    /**
-     * Return every quiz belonging to the given classroom together with
-     * the number of students that have taken each quiz.
-     *
-     * @param  int|\App\Models\Classroom  $classroom   Classroom id or instance
-     * @return \Illuminate\Support\Collection<int, \App\Models\Quiz>
-     */
+  
     function getQuizzesWithResultCount(Request $request)
     {
         $validated = $request->validate([
@@ -59,12 +50,7 @@ class TeacherClassroomController extends Controller
     }
 
 
-    /**
-     * Return every student that has taken the given quiz together with his/her score.
-     *
-     * @param  int|\App\Models\Quiz  $quiz   Quiz id or instance
-     * @return \Illuminate\Support\Collection<int, array{student_id:int, name:string|null, score:float}>
-     */
+   
     function getQuizResultsWithScores(Request $request)
     {
         $validated = $request->validate([
@@ -153,4 +139,57 @@ class TeacherClassroomController extends Controller
             'results'   => $output,
         ]);
     }
+
+     
+    public function postCreateClassroom(Request $request)
+    {
+        // 1️⃣ Validate the incoming data
+        $validator = Validator::make($request->all(), [
+            'name'          => ['required', 'string', 'max:255'],
+            'visibility'    => ['required', Rule::in(['public', 'private'])],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        // 2️⃣ Prepare the data array
+        $data = [
+            'owner_id'      => auth()->id(),          // assuming teacher is authenticated
+            'name'          => $request->input('name'),
+            'visibility'    => $request->input('visibility'),
+            'classroom_code'=> $request->$this->generateClassroomCode(),
+        ];
+
+        // 3️⃣ Create the classroom
+        $classroom = Classroom::create($data);
+
+        // 4️⃣ Return a response (you can customize the shape)
+        return response()->json([
+            'message'   => 'Classroom created successfully',
+            'classroom' => [
+                'id'             => $classroom->id,
+                'owner_id'       => $classroom->owner_id,
+                'name'           => $classroom->name,
+                'visibility'     => $classroom->visibility,
+                'classroom_code' => $classroom->classroom_code,
+            ],
+        ], 201);
+    }
+
+    /**
+     * Helper to generate a unique classroom code.
+     */
+    private function generateClassroomCode(): string
+    {
+        do {
+            $code = strtoupper(substr(bin2hex(random_bytes(4)), 0, 8));
+        } while (Classroom::where('classroom_code', $code)->exists());
+
+        return $code;
+    }
+
 }

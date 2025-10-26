@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('classrooms', function (Blueprint $table) {
             $table->id();
             $table->foreignId('owner_id')
-                  ->constrained('teachers')
+                  ->constrained('users')
                   ->onDelete('cascade');
             $table->string('name');
             $table->string('visibility', 10)->default('private');
