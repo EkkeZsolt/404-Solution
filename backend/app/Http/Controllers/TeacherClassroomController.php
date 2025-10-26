@@ -443,7 +443,7 @@ class TeacherClassroomController extends Controller
         ], 201);
     }
 
-     public function destroyOne(Request $request)
+     public function joinClassDelete(Request $request)
     {
         // Validate the two identifiers
         $validated = $request->validate([
