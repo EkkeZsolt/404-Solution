@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use App\Rules\QuestionBelongsToQuiz;
 
 class StudentClassroomController extends Controller
 {
@@ -82,59 +83,42 @@ class StudentClassroomController extends Controller
     }
 
     public function postUploadResolute(Request $request)
-    {
-        // ------------------------------------------------------------------
-        // 1️⃣ Validate the request payload
-        // ------------------------------------------------------------------
-        $validated = $request->validate([
-            'quiz_id'      => ['required', 'integer', 'exists:quizzes,id'],
-            'student_id'   => ['required', 'integer', 'exists:users,id'],
-            'answers'      => ['required', 'array', 'min:1'],
-            'answers.*.question_id' => [
-                'required',
-                'integer',
-                // make sure the question belongs to the quiz
-                function ($attribute, $value, $fail) use ($validated) {
-                    if (!\App\Models\Question::where('id', $value)
-                        ->where('quiz_id', $validated['quiz_id'])
-                        ->exists()) {
-                        $fail("Question ID {$value} does not belong to quiz {$validated['quiz_id']}.");
-                    }
-                },
-            ],
-            'answers.*.answers' => ['required', 'array'],
+{
+    // 1️⃣ Validate first – we need the quiz_id before we can build the rule
+    $validated = $request->validate([
+        'quiz_id'      => ['required', 'integer', 'exists:quizzes,id'],
+        'student_id'   => ['required', 'integer', 'exists:users,id'],
+        'answers'      => ['required', 'array', 'min:1'],
+        'answers.*.question_id' => [
+            'required',
+            'integer',
+            new QuestionBelongsToQuiz($request->input('quiz_id')),
+        ],
+        'answers.*.answers' => ['required', 'array'],
+    ]);
+
+    // 2️⃣ Transaction + insert logic
+    return DB::transaction(function () use ($validated) {
+        $result = Result::create([
+            'quiz_id'    => $validated['quiz_id'],
+            'student_id' => $validated['student_id'],
         ]);
 
-        // ------------------------------------------------------------------
-        // 2️⃣ Wrap everything in a DB transaction
-        // ------------------------------------------------------------------
-        return DB::transaction(function () use ($validated) {
-            // Create the Result record first
-            $result = Result::create([
-                'quiz_id'    => $validated['quiz_id'],
-                'student_id' => $validated['student_id'],
-            ]);
+        // Encode the answers array to JSON before bulk‑insert
+        $detailedRows = array_map(fn($item) => [
+            'result_id'   => $result->id,
+            'question_id' => $item['question_id'],
+            'answers'     => json_encode($item['answers']), // <-- fix
+        ], $validated['answers']);
 
-            // Prepare DetailedResult rows
-            $detailedRows = array_map(function ($item) use ($result) {
-                return [
-                    'result_id'   => $result->id,
-                    'question_id' => $item['question_id'],
-                    'answers'     => $item['answers'],   // will be cast to JSON
-                ];
-            }, $validated['answers']);
+        DetailedResult::insert($detailedRows);
 
-            // Bulk insert – faster than looping with create()
-            DetailedResult::insert($detailedRows);
+        return response()->json([
+            'status'    => 'success',
+            'result_id' => $result->id,
+            'message'   => 'Quiz result stored successfully.',
+        ], 201);
+    });
+}
 
-            // ------------------------------------------------------------------
-            // 3️⃣ Return a success response (you can also return the created models)
-            // ------------------------------------------------------------------
-            return response()->json([
-                'status' => 'success',
-                'result_id' => $result->id,
-                'message'   => 'Quiz result stored successfully.',
-            ], 201);
-        });
-    }
 }
