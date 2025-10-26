@@ -9,3 +9,4 @@ Route::get('/teachers/dasboard', [TeacherClassroomController::class, 'getDashboa
 
 Route::get('/teachers/classroom', [TeacherClassroomController::class, 'getQuizzesWithResultCount']);
 
+Route::get('/teachers/classroom/quiz', [TeacherClassroomController::class, 'getQuizResultsWithScores']);

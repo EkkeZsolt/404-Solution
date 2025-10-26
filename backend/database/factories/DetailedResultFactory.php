@@ -11,11 +11,12 @@ class DetailedResultFactory extends Factory
 
     public function definition()
     {
+        $correctIndexes = $this->faker->randomElements([1,2,3,4], rand(1,4));
         // Random answers (array of strings)
         return [
             'result_id'   => \App\Models\Result::factory(),
             'question_id' => \App\Models\Question::factory(),
-            'answers'     => array_map(fn() => $this->faker->sentence(3), range(1, rand(1,4))),
+            'answers'     => array_map(fn($i) => "answer_$i", $correctIndexes),
         ];
     }
 }
