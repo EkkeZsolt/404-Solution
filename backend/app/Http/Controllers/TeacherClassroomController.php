@@ -9,6 +9,9 @@ use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Models\JoinClassroom;
+use App\Models\Result;
+use Symfony\Component\HttpFoundation\Response;
 
 class TeacherClassroomController extends Controller
 {
@@ -399,5 +402,91 @@ class TeacherClassroomController extends Controller
                 }),
             ],
         ]);
+    }
+
+    public function getClassJoins(Request $request)
+    {
+        // Validate the classroom code (you could also use route model binding)
+        $validated = $request->validate([
+            'classroom_code' => ['required', 'string'],
+        ]);
+
+        /** @var string $code */
+        $code = $validated['classroom_code'];
+
+        /* -------------------------------------------------------------
+           1️⃣ Find all students that belong to this classroom
+           ------------------------------------------------------------- */
+        $studentIds = JoinClassroom::where('classroom_id', $code)
+                                   ->pluck('student_id')
+                                   ->toArray();
+
+        if (empty($studentIds)) {
+            return response()->json([
+                'status' => 'success',
+                'count'  => 0,
+                'data'   => [],
+            ], Response::HTTP_OK);
+        }
+
+        /* -------------------------------------------------------------
+           2️⃣ Pull every Result that belongs to those students
+           ------------------------------------------------------------- */
+        $results = Result::with(['detailedResults.question', 'student'])
+                         ->whereIn('student_id', $studentIds)
+                         ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'count'  => $results->count(),
+            'data'   => $results,
+        ], 201);
+    }
+
+     public function destroyOne(Request $request)
+    {
+        // Validate the two identifiers
+        $validated = $request->validate([
+            'classroom_code' => ['required', 'string'],
+            'student_id'     => ['required', 'integer', 'exists:users,id'],
+        ]);
+
+        /** @var string  $code */
+        $code   = $validated['classroom_code'];
+        /** @var int    $studentId */
+        $studentId = $validated['student_id'];
+
+        /* -------------------------------------------------------------
+           1️⃣ Verify that the student is actually in this classroom
+           ------------------------------------------------------------- */
+        $isEnrolled = JoinClassroom::where('classroom_id', $code)
+                                   ->where('student_id', $studentId)
+                                   ->exists();
+
+        if (! $isEnrolled) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Student is not enrolled in the specified classroom.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        /* -------------------------------------------------------------
+           2️⃣ Delete the student’s results (and their detailedResults)
+               inside a transaction.
+           ------------------------------------------------------------- */
+        DB::transaction(function () use ($studentId) {
+            // Delete DetailedResult rows first
+            \App\Models\DetailedResult::whereIn('result_id',
+                Result::where('student_id', $studentId)->pluck('id')
+            )->delete();
+
+            // Then delete the Result rows themselves
+            Result::where('student_id', $studentId)->delete();
+        });
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => "All results for student {$studentId} in classroom '{$code}' have been deleted.",
+        ], Response::HTTP_OK);
     }
 }

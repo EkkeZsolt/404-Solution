@@ -21,6 +21,7 @@ Route::middleware(['auth:sanctum', 'role:tanar'])
         Route::post('/classroom/quiz/create', [TeacherClassroomController::class, 'postCreateQuizWithQuestions']);
         Route::get('/classroom/quiz/edit', [TeacherClassroomController::class, 'editQuiz']);
         Route::put('/classroom/quiz/update', [TeacherClassroomController::class, 'postUpdateQuizWithQuestions']);
+        Route::get('/classroom/joins', [TeacherClassroomController::class, 'getClassJoins']);
     });
 Route::middleware(['auth:sanctum', 'role:diak'])
     ->prefix('diak')

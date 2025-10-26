@@ -10,11 +10,11 @@ class JoinClassroom extends Model
 {
     use HasFactory;
      public $timestamps = false;
-    protected $table = 'joinclassroom';
+    protected $table = 'join_classroom';
 
     /** @var array<string> */
     protected $fillable = [
-        'classroom_code',
+        'classroom_id',
         'student_id',
     ];
 
