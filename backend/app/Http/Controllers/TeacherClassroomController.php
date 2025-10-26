@@ -2,25 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Teacher;
 use App\Models\Classroom;
+use App\Models\User;
+use App\Models\Quiz;
+use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class TeacherClassroomController extends Controller
 {
-    
+
     public function getDashboard(Request $request)
     {
-
-        $validated = $request->validate([
-            'teacher_id' => ['required', 'integer', 'exists:teachers,id'],
-        ]);
-
-
         // Load the teacher (or fail with 404)
-        $teacher = Teacher::findOrFail($validated['teacher_id']);
+        $teacher = User::findOrFail(auth()->id());
 
         // Get classrooms + student counts
         $classrooms = $teacher->classrooms()
@@ -34,7 +30,7 @@ class TeacherClassroomController extends Controller
     }
 
 
-  
+
     function getQuizzesWithResultCount(Request $request)
     {
         $validated = $request->validate([
@@ -50,7 +46,7 @@ class TeacherClassroomController extends Controller
     }
 
 
-   
+
     function getQuizResultsWithScores(Request $request)
     {
         $validated = $request->validate([
@@ -140,7 +136,7 @@ class TeacherClassroomController extends Controller
         ]);
     }
 
-     
+
     public function postCreateClassroom(Request $request)
     {
         // 1️⃣ Validate the incoming data
@@ -161,7 +157,7 @@ class TeacherClassroomController extends Controller
             'owner_id'      => auth()->id(),          // assuming teacher is authenticated
             'name'          => $request->input('name'),
             'visibility'    => $request->input('visibility'),
-            'classroom_code'=> $request->$this->generateClassroomCode(),
+            'classroom_code' => $this->generateClassroomCode(),
         ];
 
         // 3️⃣ Create the classroom
@@ -192,4 +188,298 @@ class TeacherClassroomController extends Controller
         return $code;
     }
 
+    public function postCreateQuizWithQuestions(Request $request)
+    {
+        /* ------------------------------------------------------------------
+         * 1️⃣ Validate the incoming data (quiz + questions)
+         * ------------------------------------------------------------------*/
+        $validator = Validator::make($request->all(), [
+            // Quiz fields
+            'classroom_id' => ['required', 'integer', Rule::exists('classrooms', 'id')],
+            'name'         => ['required', 'string', 'max:255'],
+            'allow_back'   => ['sometimes', 'boolean'],
+
+            // Questions array
+            'questions'          => ['required', 'array', 'min:1'],
+            'questions.*.question_text'  => ['required', 'string'],
+
+            // All four answer fields are mandatory – no nulls allowed
+            'questions.*.answer_1'       => ['required', 'string'],
+            'questions.*.answer_2'       => ['required', 'string'],
+            'questions.*.answer_3'       => ['required', 'string'],
+            'questions.*.answer_4'       => ['required', 'string'],
+
+            'questions.*.max_points'     => ['required', 'integer', 'min:1'],
+
+            // correct_answers must be an array of the keys that exist in this question
+            'questions.*.correct_answers' => [
+                'required',
+                'array',
+                'min:1',
+                function ($attribute, $value, $fail) {
+                    $allowed = ['answer_1', 'answer_2', 'answer_3', 'answer_4'];
+                    foreach ($value as $key) {
+                        if (!in_array($key, $allowed)) {
+                            return $fail("Each correct answer must be one of: " . implode(', ', $allowed));
+                        }
+                    }
+                },
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        /* ------------------------------------------------------------------
+         * 2️⃣ Verify classroom ownership
+         * ------------------------------------------------------------------*/
+        $classroom = Classroom::findOrFail($request->input('classroom_id'));
+
+        if ($classroom->owner_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'You are not allowed to create a quiz in this classroom.',
+            ], 403);
+        }
+
+        /* ------------------------------------------------------------------
+         * 3️⃣ Create the quiz
+         * ------------------------------------------------------------------*/
+        $quiz = Quiz::create([
+            'classroom_id' => $request->input('classroom_id'),
+            'name'         => $request->input('name'),
+            'allow_back'   => $request->boolean('allow_back') ? 1 : 0,
+        ]);
+
+        /* ------------------------------------------------------------------
+ * 4️⃣ Prepare and bulk‑insert all questions
+ * ------------------------------------------------------------------*/
+        $questionsData = array_map(function ($q) use ($quiz) {
+            return [
+                'quiz_id'          => $quiz->id,
+                'question_text'    => $q['question_text'],
+                'answer_1'         => $q['answer_1'],
+                'answer_2'         => $q['answer_2'],
+                'answer_3'         => $q['answer_3'],
+                'answer_4'         => $q['answer_4'],
+                'max_points'       => $q['max_points'],
+
+                // **Encode the array to JSON** – this is what SQLite expects
+                'correct_answers'  => json_encode($q['correct_answers']),
+            ];
+        }, $request->input('questions'));
+
+        Question::insert($questionsData);   // now works fine
+        /* ------------------------------------------------------------------
+         * 5️⃣ Load the quiz with its questions for the response
+         * ------------------------------------------------------------------*/
+        $quizWithQuestions = Quiz::with('questions')->findOrFail($quiz->id);
+
+        return response()->json([
+            'message' => 'Quiz and its questions created successfully',
+            'quiz'    => [
+                'id'           => $quizWithQuestions->id,
+                'classroom_id' => $quizWithQuestions->classroom_id,
+                'name'         => $quizWithQuestions->name,
+                'allow_back'   => (int) $quizWithQuestions->allow_back,
+                'questions'    => $quizWithQuestions->questions->map(function ($q) {
+                    return [
+                        'id'              => $q->id,
+                        'question_text'   => $q->question_text,
+                        'answer_1'        => $q->answer_1,
+                        'answer_2'        => $q->answer_2,
+                        'answer_3'        => $q->answer_3,
+                        'answer_4'        => $q->answer_4,
+                        'max_points'      => $q->max_points,
+                        'correct_answers' => $q->correct_answers, // array of strings
+                    ];
+                }),
+            ],
+        ], 201);
+    }
+
+    public function postUpdateQuizWithQuestions(Request $request)
+    {
+        /* ---------- 1️⃣ Validate --------------------------------------- */
+        $validator = Validator::make($request->all(), [
+            // Identifiers – must exist and match
+            'quiz_id'       => ['required', 'integer', Rule::exists('quizzes', 'id')],
+            'classroom_id'  => ['required', 'integer', Rule::exists('classrooms', 'id')],
+
+            // Quiz fields
+            'name'          => ['required', 'string', 'max:255'],
+            'allow_back'    => ['sometimes', 'boolean'],
+
+            // Questions array (must match the existing count)
+            'questions'          => ['required', 'array', 'min:1'],
+            'questions.*.id'     => ['required', 'integer', Rule::exists('questions', 'id')],
+            'questions.*.question_text'  => ['required', 'string'],
+
+            // All four answer fields are mandatory
+            'questions.*.answer_1'       => ['required', 'string'],
+            'questions.*.answer_2'       => ['required', 'string'],
+            'questions.*.answer_3'       => ['required', 'string'],
+            'questions.*.answer_4'       => ['required', 'string'],
+
+            'questions.*.max_points'     => ['required', 'integer', 'min:1'],
+
+            // correct_answers must be an array of the keys that exist in this question
+            'questions.*.correct_answers' => [
+                'required',
+                'array',
+                'min:1',
+                function ($attribute, $value, $fail) {
+                    $allowed = ['answer_1', 'answer_2', 'answer_3', 'answer_4'];
+                    foreach ($value as $key) {
+                        if (!in_array($key, $allowed)) {
+                            return $fail("Each correct answer must be one of: " . implode(', ', $allowed));
+                        }
+                    }
+                },
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        /* ---------- 2️⃣ Load the quiz & check ownership ---------------- */
+        $quiz = Quiz::with('questions')->findOrFail($request->input('quiz_id'));
+
+        // Classroom must match and belong to the authenticated user
+        if ($quiz->classroom_id !== (int)$request->input('classroom_id')) {
+            return response()->json([
+                'message' => 'The quiz does not belong to the specified classroom.',
+            ], 400);
+        }
+
+        $classroom = Classroom::findOrFail($request->input('classroom_id'));
+        if ($classroom->owner_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'You are not allowed to update this quiz.',
+            ], 403);
+        }
+
+        /* ---------- 3️⃣ Update the quiz -------------------------------- */
+        $quiz->update([
+            'name'       => $request->input('name'),
+            'allow_back' => $request->boolean('allow_back') ? 1 : 0,
+        ]);
+
+        /* ---------- 4️⃣ Update each question --------------------------- */
+        foreach ($request->input('questions') as $qData) {
+            // Find the existing question that belongs to this quiz
+            $question = $quiz->questions()->where('id', $qData['id'])->firstOrFail();
+
+            $question->update([
+                'question_text'   => $qData['question_text'],
+                'answer_1'        => $qData['answer_1'],
+                'answer_2'        => $qData['answer_2'],
+                'answer_3'        => $qData['answer_3'],
+                'answer_4'        => $qData['answer_4'],
+                'max_points'      => $qData['max_points'],
+                // encode the array to JSON for SQLite
+                'correct_answers' => json_encode($qData['correct_answers']),
+            ]);
+        }
+
+        /* ---------- 5️⃣ Return updated data ---------------------------- */
+        $updatedQuiz = Quiz::with('questions')->findOrFail($quiz->id);
+
+        return response()->json([
+            'message' => 'Quiz and its questions updated successfully',
+            'quiz'    => [
+                'id'           => $updatedQuiz->id,
+                'classroom_id' => $updatedQuiz->classroom_id,
+                'name'         => $updatedQuiz->name,
+                'allow_back'   => (int) $updatedQuiz->allow_back,
+                'questions'    => $updatedQuiz->questions->map(function ($q) {
+                    return [
+                        'id'              => $q->id,
+                        'question_text'   => $q->question_text,
+                        'answer_1'        => $q->answer_1,
+                        'answer_2'        => $q->answer_2,
+                        'answer_3'        => $q->answer_3,
+                        'answer_4'        => $q->answer_4,
+                        'max_points'      => $q->max_points,
+                        'correct_answers' => $q->correct_answers, // decoded array
+                    ];
+                }),
+            ],
+        ], 200);
+    }
+
+
+    /**
+     * GET /quizzes/edit   (or POST/PUT – any verb that your client uses)
+     *
+     * The request body must contain:
+     *  - quiz_id
+     *  - classroom_id
+     *
+     * Returns the quiz data as JSON.
+     */
+    public function editQuiz(Request $request)
+    {
+        /* ---------- 1️⃣ Validate incoming JSON ------------------------ */
+        $validator = Validator::make($request->all(), [
+            'quiz_id'       => ['required', 'integer'],
+            'classroom_id'  => ['required', 'integer'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        /* ---------- 2️⃣ Load the quiz --------------------------------- */
+        $quiz = Quiz::with('classroom')
+            ->where('id', $request->input('quiz_id'))
+            ->firstOrFail();
+
+        // Classroom id supplied in body must match the one that owns the quiz
+        if ($quiz->classroom_id !== (int)$request->input('classroom_id')) {
+            return response()->json([
+                'message' => 'The provided classroom does not own this quiz.',
+            ], 400);
+        }
+
+        // Ownership check – only the teacher who owns the classroom can edit
+        if ($quiz->classroom->owner_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'You are not allowed to view this quiz.',
+            ], 403);
+        }
+
+        /* ---------- 3️⃣ Return JSON ----------------------------------- */
+        return response()->json([
+            'quiz' => [
+                'id'           => $quiz->id,
+                'classroom_id' => $quiz->classroom_id,
+                'name'         => $quiz->name,
+                'allow_back'   => (int) $quiz->allow_back,
+                'questions'    => $quiz->questions->map(function ($q) {
+                    return [
+                        'id'              => $q->id,
+                        'question_text'   => $q->question_text,
+                        'answer_1'        => $q->answer_1,
+                        'answer_2'        => $q->answer_2,
+                        'answer_3'        => $q->answer_3,
+                        'answer_4'        => $q->answer_4,
+                        'max_points'      => $q->max_points,
+                        // decoded array – already cast by the model
+                        'correct_answers' => $q->correct_answers,
+                    ];
+                }),
+            ],
+        ]);
+    }
 }

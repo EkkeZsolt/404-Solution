@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+
 
 class AuthController extends Controller
 {
@@ -16,6 +18,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
+            'role'      => ['required', Rule::in(['diak','tanar'])],
         ]);
 
         $user = User::create([
