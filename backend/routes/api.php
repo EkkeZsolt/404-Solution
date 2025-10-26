@@ -29,8 +29,5 @@ Route::middleware(['auth:sanctum', 'role:diak'])
         Route::get('/dasboard', [StudentClassroomController::class, 'getDashboard']);
         Route::get('/classroom', [StudentClassroomController::class, 'getQuizzesWithResultCount']);
         Route::get('/classroom/quiz', [StudentClassroomController::class, 'getQuiz']);
-        Route::post('/classroom/create', [TeacherClassroomController::class, 'postCreateClassroom']);
-        Route::post('/classroom/quiz/create', [TeacherClassroomController::class, 'postCreateQuizWithQuestions']);
-        Route::get('/classroom/quiz/edit', [TeacherClassroomController::class, 'editQuiz']);
-        Route::put('/classroom/quiz/update', [TeacherClassroomController::class, 'postUpdateQuizWithQuestions']);
+        Route::post('/classroom/quiz/upload', [StudentClassroomController::class, 'postUploadResolute']);
     });
