@@ -10,14 +10,12 @@ return new class extends Migration
     {
         Schema::create('join_classroom', function (Blueprint $table) {
             $table->id();                     // optional, but handy for debugging
-            $table->foreignId('user_id')
+            $table->foreignId('student_id')
                   ->constrained()
                   ->onDelete('cascade');
             $table->foreignId('classroom_id')
                   ->constrained()
                   ->onDelete('cascade');
-
-            $table->timestamps();
         });
     }
 

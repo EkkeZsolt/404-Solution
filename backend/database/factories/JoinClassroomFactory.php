@@ -12,7 +12,7 @@ class JoinClassroomFactory extends Factory
     public function definition()
     {
         return [
-            'classroom_code' => \App\Models\Classroom::factory()->create()->classroom_code,
+            'classroom_id' => \App\Models\Classroom::factory()->create()->classroom_code,
             'student_id'     => \App\Models\Student::factory(),
         ];
     }

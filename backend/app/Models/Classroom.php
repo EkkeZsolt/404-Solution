@@ -35,9 +35,15 @@ class Classroom extends Model
 
     public function students(): BelongsToMany
 {
-    return $this->belongsToMany(User::class, 'join_classroom', 'classroom_id', 'user_id')
+    return $this->belongsToMany(User::class, 'students', 'classroom_id', 'id_student')
                 ->where('role', 'diak');   // csak diákok
 }
+
+    public function students2()
+    {
+        return $this->belongsToMany(Student::class, 'students')
+                    ->withPivot('id_student', 'classroom_id');
+    }
 
 
     public function quizzes(): HasMany

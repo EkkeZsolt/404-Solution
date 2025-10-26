@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Student extends Model
 {
@@ -22,10 +23,19 @@ class Student extends Model
 
     /* Relationships ----------------------------------------------------- */
 
-    public function classroom(): BelongsTo
+    // app/Models/Student.php
+
+    public function classrooms()
     {
-        return $this->belongsTo(Classroom::class);
+        return $this->belongsToMany(
+            Classroom::class,   // a célmodell
+            'students',         // pivot tábla neve
+            'id_student',       // helyi kulcs a pivotban
+            'classroom_id'      // kapcsolódó kulcs a pivotban
+        )->withPivot('id_student', 'classroom_id'); 
     }
+
+
 
     public function results(): HasMany
     {

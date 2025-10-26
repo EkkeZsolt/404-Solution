@@ -27,7 +27,7 @@ class AllDataSeeder extends Seeder
                  * 2️⃣ Create a random number of classrooms for this teacher
                  * ------------------------------------------------------------------ */
                 $classrooms = Classroom::factory()
-                    ->count(rand(3, 7))          // 3–7 per teacher
+                    ->count(rand(10, 15))          // 3–7 per teacher
                     ->for($teacher, 'owner')     // owner_id → users.id
                     ->create();
 
@@ -48,7 +48,7 @@ class AllDataSeeder extends Seeder
                 foreach ($classrooms as $classroom) {
 
                     // a) 1–3 quizzes per classroom
-                    for ($i = 0; $i < rand(1, 3); $i++) {
+                    for ($i = 0; $i < rand(5, 10); $i++) {
                         $quiz = Quiz::factory()
                             ->for($classroom)
                             ->create();
