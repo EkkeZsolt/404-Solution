@@ -14,7 +14,7 @@ class JoinClassroom extends Model
 
     /** @var array<string> */
     protected $fillable = [
-        'classroom_id',
+        'classroom_code',
         'student_id',
     ];
 

@@ -13,9 +13,8 @@ return new class extends Migration
             $table->foreignId('student_id')
                   ->constrained()
                   ->onDelete('cascade');
-            $table->foreignId('classroom_id')
-                  ->constrained()
-                  ->onDelete('cascade');
+             $table->string('classroom_code')
+                  ->index(); 
         });
     }
 

@@ -22,6 +22,9 @@ Route::middleware(['auth:sanctum', 'role:tanar'])
         Route::get('/classroom/quiz/edit', [TeacherClassroomController::class, 'editQuiz']);
         Route::put('/classroom/quiz/update', [TeacherClassroomController::class, 'postUpdateQuizWithQuestions']);
         Route::get('/classroom/joins', [TeacherClassroomController::class, 'getClassJoins']);
+        Route::get('/classroom/joins/delete', [TeacherClassroomController::class, 'joinClassDelete']);
+        Route::post('/classroom/addstudent', [TeacherClassroomController::class, 'addNewStudent']);
+        Route::get('/classroom/code', [TeacherClassroomController::class, 'findByCode']);
     });
 Route::middleware(['auth:sanctum', 'role:diak'])
     ->prefix('diak')
@@ -31,4 +34,6 @@ Route::middleware(['auth:sanctum', 'role:diak'])
         Route::get('/classroom', [StudentClassroomController::class, 'getQuizzesWithResultCount']);
         Route::get('/classroom/quiz', [StudentClassroomController::class, 'getQuiz']);
         Route::post('/classroom/quiz/upload', [StudentClassroomController::class, 'postUploadResolute']);
+        Route::post('/classroom/addstudent', [TeacherClassroomController::class, 'addNewStudent']);
+        Route::get('/classroom/code', [TeacherClassroomController::class, 'findByCode']);
     });
