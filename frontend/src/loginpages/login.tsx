@@ -38,6 +38,7 @@ export default function Login() {
     setError("");
     alert("Sikeres bejelentkezés");
 <<<<<<< HEAD
+<<<<<<< HEAD
     navigate("/");
   }
   
@@ -45,6 +46,9 @@ export default function Login() {
 >>>>>>> de3ff4b (Create login.tsx)
 =======
     navigate("/app");
+=======
+    navigate("/");
+>>>>>>> 9707954 (login.tsx hibajavítás)
   }
   
 >>>>>>> f43d65c (error message update)
@@ -59,6 +63,7 @@ export default function Login() {
           <input type="password" placeholder="Jelszó" value={password} onChange={(e) => setPassword(e.target.value)}/>
           {error && <p className="error-message">{error}</p>}
           <button type="submit">Login</button>
+<<<<<<< HEAD
 =======
         <form className="login-form">
           <input type="text" placeholder="Felhasználónév" />
@@ -71,6 +76,8 @@ export default function Login() {
           {error && <p className="error-message">{error}</p>}
           <button type="button">Login</button>
 >>>>>>> de3ff4b (Create login.tsx)
+=======
+>>>>>>> 9707954 (login.tsx hibajavítás)
           <button type="button" onClick={() => navigate("/register")}>
             Regisztráció
           </button>
