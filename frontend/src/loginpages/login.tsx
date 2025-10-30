@@ -1,31 +1,48 @@
 import { useNavigate } from "react-router-dom";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {useState} from "react";
 =======
 >>>>>>> de3ff4b (Create login.tsx)
+=======
+import {useState} from "react";
+>>>>>>> f43d65c (error message update)
 import "./Login.scss";
 
 export default function Login() {
   const navigate = useNavigate();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f43d65c (error message update)
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+<<<<<<< HEAD
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
+=======
+  const handleRegister = () => {
+>>>>>>> f43d65c (error message update)
     if (!username || !password){
       setError("Kérlek, tölts ki minden mezőt!");
       return;
     }
     setError("");
     alert("Sikeres bejelentkezés");
+<<<<<<< HEAD
     navigate("/");
   }
   
 =======
 >>>>>>> de3ff4b (Create login.tsx)
+=======
+    navigate("/app");
+  }
+  
+>>>>>>> f43d65c (error message update)
   return (
     <div className="login-page">
       <h1>Bejelentkezés</h1>
