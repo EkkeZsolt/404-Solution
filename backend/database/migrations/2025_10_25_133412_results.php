@@ -11,18 +11,18 @@ return new class extends Migration
          Schema::create('results', function (Blueprint $table) {
             $table->id();
 
-            // Quiz FK – ez rendben van
+
             $table->foreignId('quiz_id')
-                  ->constrained()          // quizzes.id
+                  ->constrained()          
                   ->onDelete('cascade');
 
-            // Student FK – most a users.tábla
+
             $table->foreignId('student_id')
-                  ->constrained('users')   // users.id
+                  ->constrained('users')   
                   ->onDelete('cascade');
         });
 
-        // Ha SQLite‑t használsz, engedélyezd a foreign key-ket
+
         DB::statement('PRAGMA foreign_keys = ON;');
     }
 

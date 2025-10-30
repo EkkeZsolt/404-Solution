@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('answer_3');
             $table->string('answer_4');
             $table->tinyInteger('max_points')->default(1);
-            $table->json('correct_answers');   // pl. '["1","3"]'
+            $table->json('correct_answers');  
         });
 
         DB::statement('PRAGMA foreign_keys = ON;');

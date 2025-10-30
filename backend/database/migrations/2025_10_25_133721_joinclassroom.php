@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('join_classroom', function (Blueprint $table) {
-            $table->id();                     // optional, but handy for debugging
+            $table->id();                     
             $table->foreignId('student_id')
                   ->constrained()
                   ->onDelete('cascade');
