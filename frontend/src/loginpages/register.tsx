@@ -19,12 +19,15 @@ export default function Register() {
 <<<<<<< HEAD
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
+<<<<<<< HEAD
 =======
   const handleRegister = () => {
 >>>>>>> a5e0610 (register error message update)
 =======
   const handleRegister = (e: React.FormEvent) => {
 >>>>>>> dc6b96f (register javítása)
+=======
+>>>>>>> 3f8a81a (hiányzó sor berakása)
     if (!username || !email || !password || !confirmPassword || !role){
       setError("Kérlek, tölts ki minden mezőt!");
       return;
