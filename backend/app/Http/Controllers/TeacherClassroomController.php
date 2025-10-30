@@ -30,7 +30,7 @@ class TeacherClassroomController extends Controller
         ]);
     }
 
-    function getQuizzesWithResultCount(Request $request)
+    public function getQuizzesWithResultCount(Request $request)
     {
         $validated = $request->validate([
             'classroom_id' => ['required', 'integer', 'exists:classrooms,id'],
@@ -43,7 +43,7 @@ class TeacherClassroomController extends Controller
             ->get();
     }
 
-    function getQuizResultsWithScores(Request $request)
+    public function getQuizResultsWithScores(Request $request)
     {
         $validated = $request->validate([
             'quiz_id' => ['required', 'integer', 'exists:quizzes,id'],
@@ -407,17 +407,12 @@ class TeacherClassroomController extends Controller
 
     public function getClassJoins(Request $request)
     {
-        // Validate the classroom code (you could also use route model binding)
         $validated = $request->validate([
             'classroom_code' => ['required', 'string'],
         ]);
 
-        /** @var string $code */
         $code = $validated['classroom_code'];
 
-        /* -------------------------------------------------------------
-           1️⃣ Find all students that belong to this classroom
-           ------------------------------------------------------------- */
         $studentIds = JoinClassroom::where('classroom_code', $code)
             ->pluck('student_id')
             ->toArray();
@@ -430,9 +425,6 @@ class TeacherClassroomController extends Controller
             ], Response::HTTP_OK);
         }
 
-        /* -------------------------------------------------------------
-           2️⃣ Pull every Result that belongs to those students
-           ------------------------------------------------------------- */
         $results = Result::with(['detailedResults.question', 'student'])
             ->whereIn('student_id', $studentIds)
             ->get();
@@ -446,20 +438,14 @@ class TeacherClassroomController extends Controller
 
     public function joinClassDelete(Request $request)
     {
-        // Validate the two identifiers
         $validated = $request->validate([
             'classroom_code' => ['required', 'string'],
             'student_id'     => ['required', 'integer', 'exists:users,id'],
         ]);
 
-        /** @var string  $code */
         $code   = $validated['classroom_code'];
-        /** @var int    $studentId */
         $studentId = $validated['student_id'];
 
-        /* -------------------------------------------------------------
-           1️⃣ Verify that the student is actually in this classroom
-           ------------------------------------------------------------- */
         $isEnrolled = JoinClassroom::where('classroom_code', $code)
             ->where('student_id', $studentId)
             ->exists();
@@ -471,18 +457,12 @@ class TeacherClassroomController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
 
-        /* -------------------------------------------------------------
-           2️⃣ Delete the student’s results (and their detailedResults)
-               inside a transaction.
-           ------------------------------------------------------------- */
         DB::transaction(function () use ($studentId) {
-            // Delete DetailedResult rows first
             \App\Models\DetailedResult::whereIn(
                 'result_id',
                 Result::where('student_id', $studentId)->pluck('id')
             )->delete();
 
-            // Then delete the Result rows themselves
             Result::where('student_id', $studentId)->delete();
         });
 
@@ -494,30 +474,25 @@ class TeacherClassroomController extends Controller
 
     public function addNewStudent(Request $request)
     {
-        // 1️⃣ Validáció
         $validated = $request->validate([
             'id_student'   => 'required|unique:students,id_student',
             'classroom_id' => 'nullable|exists:classrooms,id',
         ]);
 
-        // 2️⃣ Diák létrehozása
         $student = Student::create($validated);
 
-        // 3️⃣ Visszairányítás vagy JSON válasz
         return redirect()->route('students.show', $student);
     }
 
     public function findByCode(Request $request)
     {
-        // 1. Validáció – csak egy string, kötelező
         $validated = $request->validate([
             'classroom_code' => ['required', 'string'],
         ]);
 
-        // 2. Lekérdezés – `firstOrFail()` dob 404‑es hibát, ha nem található.
         try {
             $classroom = Classroom::where('classroom_code', $validated['classroom_code'])
-                                   ->with(['owner', 'students', 'quizzes'])   // opcionális eager load
+                                   ->with(['owner', 'students', 'quizzes'])
                                    ->firstOrFail();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
@@ -525,7 +500,6 @@ class TeacherClassroomController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // 3. Visszatérés – JSON
         return response()->json([
             'data' => [
                 'id'             => $classroom->id,
@@ -533,7 +507,6 @@ class TeacherClassroomController extends Controller
                 'visibility'     => $classroom->visibility,
                 'code'           => $classroom->classroom_code,
                 'owner_id'       => $classroom->owner_id,
-                // opcionális: kapcsolódó adatok
                 'students_count' => $classroom->students()->count(),
                 'quizzes_count'  => $classroom->quizzes()->count(),
             ],
