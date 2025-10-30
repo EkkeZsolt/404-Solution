@@ -12,6 +12,7 @@ export default function Register() {
   const [role, setRole] = useState(""); 
   const [error, setError] = useState("");
   const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!username || !email || !password || !confirmPassword || !role){
       setError("Kérlek, tölts ki minden mezőt!");
       return;
