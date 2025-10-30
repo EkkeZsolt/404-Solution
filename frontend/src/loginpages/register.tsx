@@ -16,11 +16,15 @@ export default function Register() {
   const [role, setRole] = useState(""); 
   const [error, setError] = useState("");
 <<<<<<< HEAD
+<<<<<<< HEAD
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
 =======
   const handleRegister = () => {
 >>>>>>> a5e0610 (register error message update)
+=======
+  const handleRegister = (e: React.FormEvent) => {
+>>>>>>> dc6b96f (register javítása)
     if (!username || !email || !password || !confirmPassword || !role){
       setError("Kérlek, tölts ki minden mezőt!");
       return;
@@ -54,12 +58,16 @@ export default function Register() {
       <h1>Regisztráció</h1>
       <div className="form-wrapper">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dc6b96f (register javítása)
         <form className="register-form" onSubmit={handleRegister}> 
           <input type="text" placeholder="Felhasználónév" value={username} onChange={(e) => setUsername(e.target.value)}/>
           <input type="password" placeholder="Jelszó" value={password} onChange={(e) => setPassword(e.target.value)}/>
           <input type="password" placeholder="Jelszó újra" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
           <input type="email" placeholder="Email cím" value={email} onChange={(e) => setEmail(e.target.value)}/>
           <select value={role} onChange={(e) => setRole(e.target.value)}>
+<<<<<<< HEAD
 =======
         <form className="register-form">
           <input type="text" placeholder="Felhasználónév" />
@@ -68,6 +76,8 @@ export default function Register() {
           <input type="email" placeholder="Email cím" />
           <select>
 >>>>>>> b7e6022 (Create register.tsx)
+=======
+>>>>>>> dc6b96f (register javítása)
             <option value="">Tanár / Diák</option>
             <option value="tanar">Tanár</option>
             <option value="diak">Diák</option>
