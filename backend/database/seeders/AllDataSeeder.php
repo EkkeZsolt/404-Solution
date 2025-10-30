@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Classroom;
-use App.Models\Quiz;
+use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\Result;
 use App\Models\DetailedResult;

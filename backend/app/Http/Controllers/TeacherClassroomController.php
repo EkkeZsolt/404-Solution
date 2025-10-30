@@ -13,6 +13,7 @@ use App\Models\JoinClassroom;
 use App\Models\Result;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Student;
+use Illuminate\Support\Facades\DB;
 
 class TeacherClassroomController extends Controller
 {
@@ -49,9 +50,9 @@ class TeacherClassroomController extends Controller
             'quiz_id' => ['required', 'integer', 'exists:quizzes,id'],
         ]);
 
-        $quiz = \App\Models\Quiz::findOrFail($validated['quiz_id']);
+        $quiz = Quiz::findOrFail($validated['quiz_id']);
 
-        $results = \App\Models\Result::where('quiz_id', $quiz->id)->get();
+        $results = Result::where('quiz_id', $quiz->id)->get();
 
         $output = collect();
 
