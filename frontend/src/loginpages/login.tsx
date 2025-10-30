@@ -17,7 +17,7 @@ export default function Login() {
     }
     setError("");
     alert("Sikeres bejelentkezés");
-    navigate("/app");
+    navigate("/");
   }
   
   return (
@@ -28,7 +28,7 @@ export default function Login() {
           <input type="text" placeholder="Felhasználónév" value={username} onChange={(e) => setUsername(e.target.value)}/>
           <input type="password" placeholder="Jelszó" value={password} onChange={(e) => setPassword(e.target.value)}/>
           {error && <p className="error-message">{error}</p>}
-          <button type="button">Login</button>
+          <button type="submit">Login</button>
           <button type="button" onClick={() => navigate("/register")}>
             Regisztráció
           </button>
