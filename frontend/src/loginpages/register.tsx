@@ -89,12 +89,15 @@ export default function Register() {
 <<<<<<< HEAD
           {error && <p className="error-message">{error}</p>}
           <button type="submit">Regisztráció</button>
+<<<<<<< HEAD
 =======
 =======
           {error && <p className="error-message">{error}</p>}
 >>>>>>> a5e0610 (register error message update)
           <button type="button">Regisztráció</button>
 >>>>>>> b7e6022 (Create register.tsx)
+=======
+>>>>>>> 04a01e9 (register.tsx javítás)
         </form>
       </div>
     </div>
