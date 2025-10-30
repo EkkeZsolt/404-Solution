@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a5e0610 (register error message update)
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "./Register.scss";
@@ -12,8 +15,12 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState(""); 
   const [error, setError] = useState("");
+<<<<<<< HEAD
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
+=======
+  const handleRegister = () => {
+>>>>>>> a5e0610 (register error message update)
     if (!username || !email || !password || !confirmPassword || !role){
       setError("Kérlek, tölts ki minden mezőt!");
       return;
@@ -53,11 +60,14 @@ export default function Register() {
     }
   }; 
   
+<<<<<<< HEAD
 =======
 import "./Register.scss";
 
 export default function Register() {
 >>>>>>> b7e6022 (Create register.tsx)
+=======
+>>>>>>> a5e0610 (register error message update)
   return (
     <div className="register-page">
       <h1>Regisztráció</h1>
@@ -82,9 +92,13 @@ export default function Register() {
             <option value="diak">Diák</option>
           </select>
 <<<<<<< HEAD
+<<<<<<< HEAD
           {error && <p className="error-message">{error}</p>}
           <button type="submit">Regisztráció</button>
 =======
+=======
+          {error && <p className="error-message">{error}</p>}
+>>>>>>> a5e0610 (register error message update)
           <button type="button">Regisztráció</button>
 >>>>>>> b7e6022 (Create register.tsx)
         </form>
