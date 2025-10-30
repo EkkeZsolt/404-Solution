@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "./Register.scss";
@@ -52,22 +53,40 @@ export default function Register() {
     }
   }; 
   
+=======
+import "./Register.scss";
+
+export default function Register() {
+>>>>>>> b7e6022 (Create register.tsx)
   return (
     <div className="register-page">
       <h1>Regisztráció</h1>
       <div className="form-wrapper">
+<<<<<<< HEAD
         <form className="register-form" onSubmit={handleRegister}> 
           <input type="text" placeholder="Felhasználónév" value={username} onChange={(e) => setUsername(e.target.value)}/>
           <input type="password" placeholder="Jelszó" value={password} onChange={(e) => setPassword(e.target.value)}/>
           <input type="password" placeholder="Jelszó újra" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
           <input type="email" placeholder="Email cím" value={email} onChange={(e) => setEmail(e.target.value)}/>
           <select value={role} onChange={(e) => setRole(e.target.value)}>
+=======
+        <form className="register-form">
+          <input type="text" placeholder="Felhasználónév" />
+          <input type="password" placeholder="Jelszó" />
+          <input type="password" placeholder="Jelszó újra" />
+          <input type="email" placeholder="Email cím" />
+          <select>
+>>>>>>> b7e6022 (Create register.tsx)
             <option value="">Tanár / Diák</option>
             <option value="tanar">Tanár</option>
             <option value="diak">Diák</option>
           </select>
+<<<<<<< HEAD
           {error && <p className="error-message">{error}</p>}
           <button type="submit">Regisztráció</button>
+=======
+          <button type="button">Regisztráció</button>
+>>>>>>> b7e6022 (Create register.tsx)
         </form>
       </div>
     </div>
