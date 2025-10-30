@@ -9,7 +9,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleRegister = () => {
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!username || !password){
       setError("Kérlek, tölts ki minden mezőt!");
       return;
@@ -23,9 +24,9 @@ export default function Login() {
     <div className="login-page">
       <h1>Bejelentkezés</h1>
       <div className="form-wrapper">
-        <form className="login-form">
-          <input type="text" placeholder="Felhasználónév" />
-          <input type="password" placeholder="Jelszó" />
+        <form className="login-form" onSubmit={handleRegister}>
+          <input type="text" placeholder="Felhasználónév" value={username} onChange={(e) => setUsername(e.target.value)}/>
+          <input type="password" placeholder="Jelszó" value={password} onChange={(e) => setPassword(e.target.value)}/>
           {error && <p className="error-message">{error}</p>}
           <button type="button">Login</button>
           <button type="button" onClick={() => navigate("/register")}>
