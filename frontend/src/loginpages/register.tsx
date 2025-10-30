@@ -48,7 +48,7 @@ export default function Register() {
             <option value="diak">Diák</option>
           </select>
           {error && <p className="error-message">{error}</p>}
-          <button type="button">Regisztráció</button>
+          <button type="submit">Regisztráció</button>
         </form>
       </div>
     </div>
