@@ -1,0 +1,39 @@
+.quiz-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.quiz-box {
+    color: black;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.option-list {
+  list-style: none;
+  padding: 0;
+}
+
+.option-item {
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+
+  &.correct {
+    background-color: #a3e635;
+    cursor: default;
+  }
+
+  &.incorrect {
+    background-color: #f87171;
+    cursor: default;
+  }
+}
