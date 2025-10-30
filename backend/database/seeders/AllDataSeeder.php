@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Classroom;
-use App\Models\Quiz;
+use App.Models\Quiz;
 use App\Models\Question;
 use App\Models\Result;
 use App\Models\DetailedResult;
@@ -14,26 +14,17 @@ class AllDataSeeder extends Seeder
 {
     public function run(): void
     {
-        // ------------------------------------------------------------------
-        // 1️⃣ Create 10 teachers (users with role = 'tanar')
-        // ------------------------------------------------------------------
         User::factory()
             ->count(10)
             ->state(['role' => 'tanar'])
             ->create()
             ->each(function (User $teacher) {
 
-                /* ------------------------------------------------------------------
-                 * 2️⃣ Create a random number of classrooms for this teacher
-                 * ------------------------------------------------------------------ */
                 $classrooms = Classroom::factory()
-                    ->count(rand(10, 15))          // 3–7 per teacher
-                    ->for($teacher, 'owner')     // owner_id → users.id
+                    ->count(rand(10, 15))
+                    ->for($teacher, 'owner')
                     ->create();
 
-                /* ------------------------------------------------------------------
-                 * 3️⃣ For each classroom create a random number of students (20‑30)
-                 * ------------------------------------------------------------------ */
                 foreach ($classrooms as $room) {
                     User::factory()
                         ->count(rand(20, 30))
@@ -42,39 +33,29 @@ class AllDataSeeder extends Seeder
                         ->each(fn (User $student) => $room->students()->attach($student));
                 }
 
-                /* ------------------------------------------------------------------
-                 * 4️⃣ Create quizzes & questions for every classroom
-                 * ------------------------------------------------------------------ */
                 foreach ($classrooms as $classroom) {
 
-                    // a) 1–3 quizzes per classroom
                     for ($i = 0; $i < rand(5, 10); $i++) {
                         $quiz = Quiz::factory()
                             ->for($classroom)
                             ->create();
 
-                        // b) 5–10 questions per quiz
                         Question::factory()
                             ->count(rand(5, 10))
                             ->for($quiz)
                             ->create();
                     }
 
-                    /* ------------------------------------------------------------------
-                     * 5️⃣ Results & DetailedResults – every student attempts every quiz
-                     * ------------------------------------------------------------------ */
-                    $students = $classroom->students()->get();   // egy lekérdezés
+                    $students = $classroom->students()->get();
 
                     foreach ($students as $student) {
                         foreach ($classroom->quizzes as $quiz) {
 
-                            // 5.1 Result
                             $result = Result::factory()
                                 ->for($quiz)
-                                ->for($student, 'student')   // user_id → users.id
+                                ->for($student, 'student')
                                 ->create();
 
-                            // 5.2 DetailedResults – pick a random subset of questions
                             $questions = $quiz->questions()
                                 ->inRandomOrder()
                                 ->take(rand(3, 7))
@@ -91,7 +72,6 @@ class AllDataSeeder extends Seeder
                 }
             });
 
-        // Quick summary
         $this->command->info('✅ All data seeded! (≈ '
             . User::where('role', 'tanar')->count() . ' teachers, '
             . Classroom::count() . ' classrooms, '
