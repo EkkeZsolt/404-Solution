@@ -57,6 +57,7 @@ export default function Login() {
         <form className="login-form">
           <input type="text" placeholder="Felhasználónév" />
           <input type="password" placeholder="Jelszó" />
+          {error && <p className="error-message">{error}</p>}
           <button type="button">Login</button>
 >>>>>>> de3ff4b (Create login.tsx)
           <button type="button" onClick={() => navigate("/register")}>
