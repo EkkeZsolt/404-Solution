@@ -1,12 +1,15 @@
 // src/components/Header.tsx
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Header.scss";
 
 const Header: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
+  const navigate = useNavigate();
 
   const handleClick = () => {
     setIsActive(!isActive);
+    navigate("/login");
   };
 
   return (
