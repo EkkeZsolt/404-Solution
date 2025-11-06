@@ -27,11 +27,30 @@ export default function Register() {
       setError("Kérlek, válaszd ki, hogy tanár vagy diák vagy!");
       return;
     }
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          name: username,
+          email,
+          password,
+          role
+        }),
+      });
+      const data = await response.json();
 
-    setError("");
-    alert("Sikeres regisztráció");
-    navigate("/login");
-  };
+      if (!response.ok) {
+        setError(data.message || "Hiba történt a regisztráció során!");
+        return;
+      }
+
+      alert("Sikeres regisztráció!");
+      navigate("/login");
+    } catch (err: any) {
+      setError(err.message);
+    }
+  }; 
   
   return (
     <div className="register-page">
