@@ -1,12 +1,14 @@
-import './App.scss'
+import './App.scss';
 import './index.scss';
 import Hero from './hero/Hero';
+import FrontWords from './front-words/FrontWords'; // <-- Fontos import!
 
 function App() {
   return (
     <>
       <header className="site-header">
-        <div className="logo">L</div>
+        {/* A drótváz alapján az "L" logó helyett a cím van itt */}
+        <h1 className="header-title">Kezdőlap</h1>
         <nav className="auth">
           <button className="auth-btn">Bejelentkezés/Regisztráció</button>
         </nav>
@@ -14,6 +16,7 @@ function App() {
 
       <main>
         <Hero />
+        <FrontWords /> {/* <-- Hozzáadva a második szekció */}
       </main>
     </>
   );
