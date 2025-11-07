@@ -36,4 +36,5 @@ Route::middleware(['auth:sanctum', 'role:diak'])
         Route::post('/classroom/quiz/upload', [StudentClassroomController::class, 'postUploadResolute']);
         Route::post('/classroom/addstudent', [TeacherClassroomController::class, 'addNewStudent']);
         Route::get('/classroom/code', [TeacherClassroomController::class, 'findByCode']);
+        Route::get('/classroom/joins/create', [StudentClassroomController::class, 'addJoinStudent']);
     });
