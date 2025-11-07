@@ -1,47 +1,25 @@
-import {BrowserRouter as Router, Routes, Route, useNavigate} from "react-router-dom";
+import React from 'react'
+import { useState } from 'react'
+import Quiz from './QuizApp/Quiz'
 import './App.scss'
-import './index.scss';
-import Hero from './hero/Hero';
-import LoginPage from './loginpages/login';
-import RegisterPage from './loginpages/register';
+import Hero from './components/Hero';
+import './index.css';
 
-function Header() {
-  const navigate = useNavigate();
-
+function App() {
   return (
     <>
       <header className="site-header">
         <div className="logo">L</div>
         <nav className="auth">
-          <button className="auth-btn" onClick={() => navigate("/login")}>Bejelentkezés/Regisztráció</button>
+          <button className="auth-btn">Bejelentkezés/Regisztráció</button>
         </nav>
       </header>
-    </>
-  );
-}
 
-function HomePage() {
-  return (
-    <>
-      <Header />
       <main>
         <Hero />
       </main>
     </>
   );
 }
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-      </Routes>
-    </Router>
-  )
-}
-
 
 export default App;
