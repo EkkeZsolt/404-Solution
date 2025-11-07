@@ -1,61 +1,47 @@
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import {useState} from "react";
+=======
+>>>>>>> de3ff4b (Create login.tsx)
 import "./Login.scss";
 
 export default function Login() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+<<<<<<< HEAD
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password){
+    if (!username || !password){
       setError("Kérlek, tölts ki minden mezőt!");
       return;
     }
-  try {
-      const response = await fetch("http://127.0.0.1:8000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify({email, password}),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Hiba történt a bejelentkezés során.");
-        return;
-      }
-
-      const userRole = data.user.role;
-
-      localStorage.setItem("token", data.token);
-
-      if (userRole.toLowerCase() === "tanar") {
-        navigate("/tanarfelulet");
-      } else if (userRole.toLowerCase() === "diak") {
-        navigate("/diakfelulet");
-      } else {
-        setError("Ismeretlen felhasználói szerep.");
-      }
-    } catch (err) {
-      setError("Hálózati hiba, próbáld újra.");
-      console.error(err);
-    }
-  }  
+    setError("");
+    alert("Sikeres bejelentkezés");
+    navigate("/");
+  }
   
-  
+=======
+>>>>>>> de3ff4b (Create login.tsx)
   return (
     <div className="login-page">
       <h1>Bejelentkezés</h1>
       <div className="form-wrapper">
+<<<<<<< HEAD
         <form className="login-form" onSubmit={handleRegister}>
-          <input type="text" placeholder="Felhasználónév" value={email} onChange={(e) => setEmail(e.target.value)}/>
+          <input type="text" placeholder="Felhasználónév" value={username} onChange={(e) => setUsername(e.target.value)}/>
           <input type="password" placeholder="Jelszó" value={password} onChange={(e) => setPassword(e.target.value)}/>
           {error && <p className="error-message">{error}</p>}
           <button type="submit">Login</button>
+=======
+        <form className="login-form">
+          <input type="text" placeholder="Felhasználónév" />
+          <input type="password" placeholder="Jelszó" />
+          <button type="button">Login</button>
+>>>>>>> de3ff4b (Create login.tsx)
           <button type="button" onClick={() => navigate("/register")}>
             Regisztráció
           </button>
