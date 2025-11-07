@@ -5,7 +5,7 @@ import "./Login.scss";
 export default function Login() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -47,6 +47,7 @@ export default function Login() {
   }  
   
   
+
   return (
     <div className="login-page">
       <h1>Bejelentkezés</h1>

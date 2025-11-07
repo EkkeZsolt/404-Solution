@@ -12,6 +12,8 @@ use App\Models\DetailedResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Rules\QuestionBelongsToQuiz;
+use App\Models\JoinClassroom;
+use Symfony\Component\HttpFoundation\Response;
 
 class StudentClassroomController extends Controller
 {
@@ -95,5 +97,20 @@ class StudentClassroomController extends Controller
                 'message'   => 'Quiz result stored successfully.',
             ], 201);
         });
+    }
+
+
+    public function addJoinStudent(Request $request)
+    {
+        $validated = $request->validate([
+            'student_id'   => ['required', 'integer'],
+            'classroom_code' => ['required', 'string']
+        ]);
+        $student = JoinClassroom::create($validated);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => "{$student}",
+        ], Response::HTTP_OK);
     }
 }

@@ -1,3 +1,6 @@
+import './App.scss'
+import './index.scss';
+
 import { Routes, Route, useLocation } from "react-router-dom";
 import './App.scss';
 import './index.scss';
@@ -8,7 +11,6 @@ import Register from "./loginpages/register";
 import Login from "./loginpages/login";
 import TanarFelulet from "./TanarFelulet/tanarfelulet";
 import DiakFelulet from "./DiakFelulet/diakfelulet";
-
 function App() {
   const location = useLocation();
 

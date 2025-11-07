@@ -418,7 +418,7 @@ class TeacherClassroomController extends Controller
             ->pluck('student_id')
             ->toArray();
 
-        if (empty($studentIds)) {
+        if (count($studentIds)==0) {
             return response()->json([
                 'status' => 'success',
                 'count'  => 0,
@@ -426,14 +426,10 @@ class TeacherClassroomController extends Controller
             ], Response::HTTP_OK);
         }
 
-        $results = Result::with(['detailedResults.question', 'student'])
-            ->whereIn('student_id', $studentIds)
-            ->get();
 
         return response()->json([
             'status' => 'success',
-            'count'  => $results->count(),
-            'data'   => $results,
+            'student_ids'   => $studentIds,
         ], 201);
     }
 
@@ -458,15 +454,6 @@ class TeacherClassroomController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
 
-        DB::transaction(function () use ($studentId) {
-            \App\Models\DetailedResult::whereIn(
-                'result_id',
-                Result::where('student_id', $studentId)->pluck('id')
-            )->delete();
-
-            Result::where('student_id', $studentId)->delete();
-        });
-
         return response()->json([
             'status'  => 'success',
             'message' => "All results for student {$studentId} in classroom '{$code}' have been deleted.",
@@ -476,13 +463,15 @@ class TeacherClassroomController extends Controller
     public function addNewStudent(Request $request)
     {
         $validated = $request->validate([
-            'id_student'   => 'required|unique:students,id_student',
-            'classroom_id' => 'nullable|exists:classrooms,id',
+            'id_student'   => ['required', 'integer'],
+            'classroom_id' => ['required', 'integer']
         ]);
-
         $student = Student::create($validated);
 
-        return redirect()->route('students.show', $student);
+        return response()->json([
+            'status'  => 'success',
+            'message' => "{$student}",
+        ], Response::HTTP_OK);
     }
 
     public function findByCode(Request $request)
