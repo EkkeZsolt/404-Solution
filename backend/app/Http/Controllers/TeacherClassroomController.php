@@ -476,13 +476,15 @@ class TeacherClassroomController extends Controller
     public function addNewStudent(Request $request)
     {
         $validated = $request->validate([
-            'id_student'   => 'required|unique:students,id_student',
-            'classroom_id' => 'nullable|exists:classrooms,id',
+            'id_student'   => ['required', 'integer'],
+            'classroom_id' => ['required', 'integer']
         ]);
-
         $student = Student::create($validated);
 
-        return redirect()->route('students.show', $student);
+        return response()->json([
+            'status'  => 'success',
+            'message' => "{$student}",
+        ], Response::HTTP_OK);
     }
 
     public function findByCode(Request $request)
