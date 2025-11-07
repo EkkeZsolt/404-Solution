@@ -1,28 +1,34 @@
-<<<<<<< HEAD
 import './App.scss'
 import './index.scss';
-import Hero from './hero/Hero';
-=======
-import React from 'react'
-import { useState } from 'react'
-import Quiz from './QuizApp/Quiz'
-import './App.scss'
-import Hero from './components/Hero';
-import './index.css';
->>>>>>> 82f1200 (fix: nem működik még mindig valamiért a reac, azt próbálom megcsinálni, a main.tsx.-ben rossz elérési út volt megadva az index.scss-nek)
 
+import { Routes, Route, useLocation } from "react-router-dom";
+import './App.scss';
+import './index.scss';
+import Hero from './hero/Hero';
+import FrontWords from './front-words/FrontWords'; // <-- Fontos import!
+import Header from "./header/Header";
+import Register from "./loginpages/register";
+import Login from "./loginpages/login";
+import TanarFelulet from "./TanarFelulet/tanarfelulet";
+import DiakFelulet from "./DiakFelulet/diakfelulet";
 function App() {
+  const location = useLocation();
+
+  const hideHeaderRoutes = ["/login", "/register", "/tanarFelulet", "/diakFelulet"];
+
+  const shouldHideHeader = hideHeaderRoutes.some(path => location.pathname.startsWith(path));
+  
   return (
     <>
-      <header className="site-header">
-        <div className="logo">L</div>
-        <nav className="auth">
-          <button className="auth-btn">Bejelentkezés/Regisztráció</button>
-        </nav>
-      </header>
-
+      {!shouldHideHeader && <Header />}
       <main>
-        <Hero />
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/tanarFelulet" element={<TanarFelulet />} />
+          <Route path="/diakFelulet" element={<DiakFelulet />} />
+        </Routes>
       </main>
     </>
   );
