@@ -11,19 +11,19 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    image: "/images/slide1.jpg",
+    image: "/images/slide1.png",
     subtitle: "Van rá egy jó játékunk!",
     slogan: "Csatlakozz most és játssz velünk!",
   },
   {
     id: 2,
-    image: "/images/slide2.jpg",
+    image: "/images/slide2.png",
     subtitle: "Kihívás vár rád",
     slogan: "Próbáld ki a legújabb módokat!",
   },
   {
     id: 3,
-    image: "/images/slide3.jpg",
+    image: "/images/slide3.png",
     subtitle: "Barátok és verseny",
     slogan: "Hívd meg a csapatot és győzzetek!",
   },
