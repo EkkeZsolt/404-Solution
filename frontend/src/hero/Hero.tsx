@@ -85,7 +85,6 @@ const Hero: React.FC = () => {
           aria-hidden={i === index ? "false" : "true"}
         >
           <div className="hero-overlay">
-            <h1 className="hero-title">Fő Üzenet</h1>
             <p className="hero-subtitle">{s.subtitle}</p>
             <p className="hero-slogan">{s.slogan}</p>
             <button

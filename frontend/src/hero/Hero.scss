@@ -43,15 +43,19 @@
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
+  font-size: 1.4rem;     /* Nagyobb betűméret (volt 1.25rem) */
+  font-weight: 600;      /* Kicsit vastagabb betű (félkövér) */
+  opacity: 1;            /* Teljes láthatóság (volt 0.95) */
   margin: 0.25rem 0;
-  opacity: 0.95;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); /* Árnyék a kontrasztért */
 }
 
 .hero-slogan {
-  font-size: 1rem;
+  font-size: 1.1rem;     /* Nagyobb betűméret (volt 1rem) */
+  color: #ffffff;      /* Teljesen fehér (volt #f0f0f0) */
+  font-weight: 400;      /* Normál vastagság, de jobban látható a méret miatt */
   margin: 0.25rem 0 1rem 0;
-  color: #f0f0f0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); /* Árnyék a kontrasztért */
 }
 
 .join-btn {
@@ -120,8 +124,8 @@
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 8x;
+  height: 8px;
   border-radius: 50%;
   background: rgba(255,255,255,0.45);
   border: none;
@@ -131,7 +135,7 @@
 
 .hero-dots .dot-active {
   background: #fff;
-  transform: scale(1.18);
+  transform: scale(1.15);
 }
 
 @media (max-width: 768px) {
