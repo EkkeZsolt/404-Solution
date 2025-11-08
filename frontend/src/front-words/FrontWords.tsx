@@ -1,5 +1,4 @@
-// src/components/FrontWords.tsx
-import React, { useMemo } from "react";
+import React from "react";
 import "./FrontWords.scss";
 
 interface FrontSection {
@@ -36,17 +35,18 @@ const sections: FrontSection[] = [
 ];
 
 const FrontWords: React.FC = () => {
-  const randomSection = useMemo(
-    () => sections[Math.floor(Math.random() * sections.length)],
-    []
-  );
-
   return (
-    <section className="frontWords" data-type={randomSection.id}>
-      <h2>{randomSection.title}</h2>
-      {randomSection.text.map((paragraph, i) => (
-        <p key={i}>{paragraph}</p>
-      ))}
+    <section className="frontWords-section"> {/* Új fő konténer osztály */}
+      <div className="frontWords-container"> {/* A kártyákat tartalmazó flex konténer */}
+        {sections.map((section) => (
+          <div className="frontWords-card" key={section.id}> {/* Minden szekció egy kártya */}
+            <h3>{section.title}</h3> {/* H3-ra változtatva a címet */}
+            {section.text.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+          </div>
+        ))}
+      </div>
     </section>
   );
 };
