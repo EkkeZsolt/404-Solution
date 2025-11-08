@@ -40,3 +40,34 @@
 .read-the-docs {
   color: #888;
 }
+
+
+/* ========= HEADER JAVÍTÁSOK ========= */
+
+.site-header {
+  display: flex;
+  justify-content: space-between; // Szétdobja a két elemet
+  align-items: center;          // Függőlegesen középre igazítja őket
+  width: 100%;                  // Teljes szélességű legyen
+  margin-bottom: 2rem;          // EZ A LÉNYEG: Helyet hagy a kép felett
+}
+
+.header-title {
+  margin: 0; // Leszedi az alapértelmezett h1 margót
+  font-size: 2rem; // Kicsit kisebbre vesszük, hogy elférjen
+}
+
+.auth-btn {
+  // Ezt a gombot a képernyőképed alapján sötétre stilizáljuk
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  border: 1px solid #444;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #333;
+  }
+}
