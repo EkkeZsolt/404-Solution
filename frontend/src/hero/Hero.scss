@@ -76,25 +76,50 @@
 
 .hero-controls {
   position: absolute;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  inset: 0; // Kitölti az egész szülő (.hero) konténert
+  z-index: 10; // Biztosítja, hogy a vezérlők a kép felett legyenek
 }
 
 .hero-prev, .hero-next {
-  background: rgba(0,0,0,0.45);
+  // Régi stílusok megtartva:
+  background: rgba(0, 0, 0, 0.45);
   border: none;
   color: #fff;
   font-size: 1.6rem;
   padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
+
+
+ // Új pozicinálás:
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%); // Pontosan középre
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.7); // Kicsit sötétebb hover
+  }
 }
 
-.hero-dots .dot {
+.hero-prev {
+  left: 1.5rem; // Távolság a bal széltől
+}
+
+.hero-next {
+  right: 1.5rem; // Távolság a jobb széltől
+}
+
+.hero-dots {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+}
+
+.dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
