@@ -71,3 +71,13 @@
     background-color: #333;
   }
 }
+
+.app-main-content {
+  max-width: 1200px; /* Vagy amekkora szélességet szeretnél */
+  margin: 0 auto;
+  padding: 0 1rem; /* Kisebb képernyőkön is legyen egy kis padding */
+
+  @media (max-width: 768px) {
+    max-width: 100%; /* Telefonon vegye fel a teljes szélességet */
+  }
+}

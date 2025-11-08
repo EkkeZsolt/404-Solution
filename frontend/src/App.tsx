@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <header className="site-header">
-        {/* A drótváz alapján az "L" logó helyett a cím van itt */}
+        {}
         <h1 className="header-title">Kezdőlap</h1>
         <nav className="auth">
           <button className="auth-btn">Bejelentkezés/Regisztráció</button>
