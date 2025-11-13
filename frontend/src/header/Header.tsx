@@ -1,13 +1,9 @@
 // src/components/Header.tsx
-import React, { useState } from "react";
+import { useNavigate } from "react";
 import "./Header.scss";
 
 const Header: React.FC = () => {
-  const [isActive, setIsActive] = useState(false);
-
-  const handleClick = () => {
-    setIsActive(!isActive);
-  };
+  const navigate = useNavigate();
 
   return (
     <header className="header">
@@ -16,9 +12,8 @@ const Header: React.FC = () => {
 
       {/* Jobb oldali gomb */}
       <button
-        type="button"
-        className={`nav-btn ${isActive ? "active" : ""}`}
-        onClick={handleClick}
+        className="nav-btn" 
+        onClick={() => navigate('/login')}
       >
         Bejelentkezés / Regisztráció
       </button>
