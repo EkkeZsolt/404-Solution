@@ -28,9 +28,27 @@ export default function Register() {
       return;
     }
 
-    setError("");
-    alert("Sikeres regisztráció");
-    navigate("/login");
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          name: username,
+          email,
+          password,
+          role
+        }),
+      });
+      if (!response.ok) {
+          const error = await response.json().catch(() => ({ message: 'Nem JSON válasz' }));
+          console.error("Register error:", error);
+        return;
+      }
+      alert("Sikeres regisztráció!");
+      navigate("/login");
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
   
   return (

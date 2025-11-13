@@ -11,10 +11,17 @@ export default function Groups() {
     useEffect(() => {
         const fetchGroups = async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/groups");
+                const token = localStorage.getItem("token");
+                const response = await fetch("http://localhost:8000/api/groups", {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      "Content-Type": "application/json",
+                    },
+                });
+                if (!response.ok) throw new Error(`Hálózati hiba: ${response.status}`);
                 const data = await response.json();
 
-                setGroups(data); 
+                setGroups(data.classrooms); 
       } catch (err) {
         console.error("Hiba a csoportok lekérésekor:", err);
       } finally {

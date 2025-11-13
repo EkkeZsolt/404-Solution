@@ -14,6 +14,7 @@ class AuthController extends Controller
     // REGISZTRÁCIÓ
     public function register(Request $request)
     {
+        try{
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
@@ -25,12 +26,25 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
         ]);
 
         return response()->json([
+            'message' => 'Sikeres regisztráció!',
             'user' => $user,
             'token' => $user->createToken('api_token')->plainTextToken,
-        ]);
+        ], 201);
+        }catch (\Illuminate\Validation\ValidationException $e){
+            return response() ->json([
+                'message' => $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Váratlan hiba történt a regisztráció során.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     // BEJELENTKEZÉS
@@ -50,6 +64,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
+            'message' => 'Sikeres bejelentkezés!',
             'user' => $user,
             'token' => $user->createToken('api_token')->plainTextToken,
         ]);
