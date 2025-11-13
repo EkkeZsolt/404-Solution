@@ -37,3 +37,11 @@ Route::middleware(['auth:sanctum', 'role:diak'])
         Route::post('/classroom/addstudent', [TeacherClassroomController::class, 'addNewStudent']);
         Route::get('/classroom/code', [TeacherClassroomController::class, 'findByCode']);
     });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/groups', [TeacherClassroomController::class, 'getDashboard']);
+    Route::post('/groups', [TeacherClassroomController::class, 'postCreateClassroom']);
+    Route::get('/dashboard', [TeacherClassroomController::class, 'getDashboard']);
+    Route::get('/groups/{id}', [TeacherClassroomController::class, 'findById']);
+    Route::middleware('auth:sanctum')->get('/groups/code/{classroom_code}', [TeacherClassroomController::class, 'findByCode']);
+});
