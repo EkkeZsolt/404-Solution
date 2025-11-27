@@ -7,6 +7,7 @@ import CreateClassroom from './TanarFelulet/CreateClassroom';
 import GroupDetails from './TanarFelulet/GroupDetails';
 import TanarFelulet from "./TanarFelulet/tanarfelulet";
 import DiakFelulet from "./DiakFelulet/diakfelulet";
+import JoinClassroom from "./DiakFelulet/JoinClassroom";
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import FrontWords from './front-words/FrontWords'; // <-- Fontos import!
 
@@ -36,6 +37,7 @@ function App() {
       <Route path="/GroupDetails/:id" element={<GroupDetails />} />
       <Route path="/tanarFelulet" element={<TanarFelulet />} />
       <Route path="/diakFelulet" element={<DiakFelulet />} />
+      <Route path="/JoinClassroom" element={<JoinClassroom />} />
       </Routes>
   );
 }
