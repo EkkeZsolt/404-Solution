@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./diakfelulet.scss";
 
 interface Classroom {
@@ -8,6 +9,7 @@ interface Classroom {
 }
 
 export default function DiakFelulet() {
+  const navigate = useNavigate();
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

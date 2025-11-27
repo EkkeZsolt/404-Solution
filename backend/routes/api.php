@@ -36,6 +36,7 @@ Route::middleware(['auth:sanctum', 'role:diak'])
         Route::post('/classroom/quiz/upload', [StudentClassroomController::class, 'postUploadResolute']);
         Route::post('/classroom/addstudent', [TeacherClassroomController::class, 'addNewStudent']);
         Route::get('/classroom/code', [TeacherClassroomController::class, 'findByCode']);
+        Route::get('/classrooms', [StudentClassroomController::class, 'getClassrooms']);
     });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -43,5 +44,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/groups', [TeacherClassroomController::class, 'postCreateClassroom']);
     Route::get('/dashboard', [TeacherClassroomController::class, 'getDashboard']);
     Route::get('/groups/{id}', [TeacherClassroomController::class, 'findById']);
+    Route::get('/groups/code/{code}', [GroupController::class, 'show']);
     Route::middleware('auth:sanctum')->get('/groups/code/{classroom_code}', [TeacherClassroomController::class, 'findByCode']);
 });
