@@ -1,0 +1,35 @@
+.quiz-details-page {
+  padding: 30px;
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  button {
+    background: #1e90ff;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #f3f3f3;
+    }
+
+    tr:nth-child(even) {
+      background: #fafafa;
+    }
+  }
+}
