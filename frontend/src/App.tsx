@@ -1,13 +1,14 @@
 import './App.scss';
 import './index.scss';
 import Hero from './hero/Hero';
-import LoginPage from './LoginPages/Login';
-import RegisterPage from './LoginPages/register';
+import LoginPage from './loginpages/login';
+import RegisterPage from './loginpages/register';
 import CreateClassroom from './TanarFelulet/CreateClassroom';
 import GroupDetails from './TanarFelulet/GroupDetails';
 import TanarFelulet from "./TanarFelulet/tanarfelulet";
 import DiakFelulet from "./DiakFelulet/diakfelulet";
 import JoinClassroom from "./DiakFelulet/JoinClassroom";
+import CreateQuiz from "./TanarFelulet/CreateQuiz";
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import FrontWords from './front-words/FrontWords'; // <-- Fontos import!
 
@@ -38,6 +39,7 @@ function App() {
       <Route path="/tanarFelulet" element={<TanarFelulet />} />
       <Route path="/diakFelulet" element={<DiakFelulet />} />
       <Route path="/JoinClassroom" element={<JoinClassroom />} />
+      <Route path="/group/:groupId/quiz/create" element={<CreateQuiz />} />
       </Routes>
   );
 }

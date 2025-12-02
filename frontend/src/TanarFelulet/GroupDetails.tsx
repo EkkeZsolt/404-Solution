@@ -90,7 +90,7 @@ export default function GroupDetails() {
           <button className="join-btn" onClick={() => setShowModal(true)}>
             Join kérelmek
           </button>
-          <button className="new-quiz-btn" onClick={handleNewQuiz}>
+          <button className="new-quiz-btn" onClick={() => navigate(`/group/${group.id}/quiz/create`)}>
             Új kvíz létrehozása
           </button>
         </div>
