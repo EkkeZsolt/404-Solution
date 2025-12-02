@@ -9,6 +9,7 @@ import TanarFelulet from "./TanarFelulet/tanarfelulet";
 import DiakFelulet from "./DiakFelulet/diakfelulet";
 import JoinClassroom from "./DiakFelulet/JoinClassroom";
 import CreateQuiz from "./TanarFelulet/CreateQuiz";
+import QuizNezet from "./TanarFelulet/QuizNezet";
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import FrontWords from './front-words/FrontWords'; // <-- Fontos import!
 
@@ -39,6 +40,7 @@ function App() {
       <Route path="/tanarFelulet" element={<TanarFelulet />} />
       <Route path="/diakFelulet" element={<DiakFelulet />} />
       <Route path="/JoinClassroom" element={<JoinClassroom />} />
+      <Route path="/QuizNezet" element={<QuizNezet />} />
       <Route path="/group/:groupId/quiz/create" element={<CreateQuiz />} />
       </Routes>
   );
