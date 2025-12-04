@@ -3,7 +3,15 @@ import "./CreateQuiz.scss";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CreateQuizPage() {
+    type Answer = { text: string; is_correct: boolean };
+    type Question = { id: number; title: string; max_points: number; answers: Answer[] };
+    type Quiz = { id: number; name: string; allow_back: boolean; questions: Question[] };
+
+    type CreateQuizProps = {
+        existingQuiz?: Quiz;
+        onClose: () => void;
+    };
+export default function CreateQuizPage({ existingQuiz, onClose }: CreateQuizProps) {
     const navigate = useNavigate();
     const { groupId } = useParams();
 
@@ -73,7 +81,7 @@ export default function CreateQuizPage() {
     return (
         <div className="create-quiz-page">
             <h1>Kvíz létrehozása</h1>
-
+            <button onClick={onClose}>Bezár</button>
             <div className="quiz-header">
                 <input
                     type="text"

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import CreateQuiz from "./CreateQuiz";
-import "./QuizDetails.scss";
+import "./QuizNezet.scss";
 
 type Answer = { text: string; is_correct: boolean };
 type Question = { id: number; title: string; max_points: number; answers: Answer[] };
@@ -52,7 +52,7 @@ export default function QuizDetails() {
         </thead>
         <tbody>
           {results.map(r => (
-            <tr key={r.id}>
+            <tr key={r.id} onClick={() => navigate(`/quiz/${quiz.id}/user/${r.id}`)}>
               <td>{r.user.name}</td>
               <td>{r.score}</td>
               <td>{r.percentage}%</td>
