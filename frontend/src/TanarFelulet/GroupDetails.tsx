@@ -90,7 +90,7 @@ export default function GroupDetails() {
           <button className="join-btn" onClick={() => setShowModal(true)}>
             Join kérelmek
           </button>
-          <button className="new-quiz-btn" onClick={handleNewQuiz}>
+          <button className="new-quiz-btn" onClick={() => navigate(`/group/${group.id}/quiz/create`)}>
             Új kvíz létrehozása
           </button>
         </div>
@@ -102,7 +102,7 @@ export default function GroupDetails() {
       ) : (
         <ul className="quiz-list">
           {quizzes.map((quiz) => (
-            <li key={quiz.id} className="quiz-item">
+            <li key={quiz.id} className="quiz-item"onClick={() => navigate(`/quiz/${quiz.id}`)} style={{ cursor: "pointer" }}>
               <span className="quiz-name">{quiz.name}</span>
               <span className="quiz-stats">{quiz.completions} kitöltés</span>
             </li>

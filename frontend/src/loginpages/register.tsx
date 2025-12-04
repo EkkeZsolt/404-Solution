@@ -27,7 +27,7 @@ export default function Register() {
       setError("Kérlek, válaszd ki, hogy tanár vagy diák vagy!");
       return;
     }
-
+async function handleRegister(){
     try {
       const response = await fetch("http://127.0.0.1:8000/api/register", {
         method: "POST",
@@ -50,7 +50,7 @@ export default function Register() {
       setError(err.message);
     }
   };
-  
+}
   return (
     <div className="register-page">
       <h1>Regisztráció</h1>
