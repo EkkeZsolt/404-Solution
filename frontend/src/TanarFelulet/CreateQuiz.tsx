@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
     type CreateQuizProps = {
         existingQuiz?: Quiz;
-        onClose: () => void;
+        onClose?: () => void;
     };
 export default function CreateQuizPage({ existingQuiz, onClose }: CreateQuizProps) {
     const navigate = useNavigate();
