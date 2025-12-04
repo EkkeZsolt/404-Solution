@@ -1,5 +1,5 @@
 // src/components/Header.tsx
-import { useNavigate } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Header.scss";
 
 const Header: React.FC = () => {

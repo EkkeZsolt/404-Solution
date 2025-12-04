@@ -9,13 +9,12 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password){
       setError("Kérlek, tölts ki minden mezőt!");
       return;
     }
-    async function handleLogin() {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/login", {
         method: "POST",
@@ -45,13 +44,12 @@ export default function Login() {
       setError("Hálózati hiba, próbáld újra.");
       console.error(err);
     }
-  }
 }
   return (
     <div className="login-page">
       <h1>Bejelentkezés</h1>
       <div className="form-wrapper">
-        <form className="login-form" onSubmit={handleRegister}>
+        <form className="login-form" onSubmit={handleLogin}>
           <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
           <input type="password" placeholder="Jelszó" value={password} onChange={(e) => setPassword(e.target.value)}/>
           {error && <p className="error-message">{error}</p>}
