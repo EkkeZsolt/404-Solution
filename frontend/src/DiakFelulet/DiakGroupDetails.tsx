@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./tanarfelulet.scss";
 
 interface QuizResult {
   id: number;
   name: string;
-  score: number | null; // null, ha még nincs pont
+  score: number | null;
 }
 
 export default function ClassroomDetails() {
   const { code } = useParams<{ code: string }>();
+  const navigate = useNavigate();
 
   const [classroom, setClassroom] = useState<any>(null);
   const [quizResults, setQuizResults] = useState<QuizResult[]>([]);
@@ -46,6 +47,10 @@ export default function ClassroomDetails() {
 
     fetchData();
   }, [code]);
+    const goToQuizPage = (quizId: number) => {
+    navigate(`/teacher/classroom/${code}/quiz/${quizId}`);
+  };
+
 
   if (loading) {
     return <p className="loading-text">Adatok betöltése...</p>;
@@ -64,7 +69,7 @@ export default function ClassroomDetails() {
       ) : (
         <ul className="quiz-results-list">
           {quizResults.map((quiz) => (
-            <li key={quiz.id} className="quiz-result-item">
+            <li key={quiz.id} className="quiz-result-item" onClick={() => goToQuizPage(quiz.id)}>
               <span className="quiz-name">{quiz.name}</span>
               <span className="quiz-score">
                 {quiz.score !== null ? `${quiz.score} pont` : "Nincs pontszám"}
