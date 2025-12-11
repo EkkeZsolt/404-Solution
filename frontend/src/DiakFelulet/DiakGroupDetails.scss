@@ -44,6 +44,8 @@
     .quiz-result-item {
       display: flex;
       justify-content: space-between;
+      cursor: pointer;
+      transition: 0.2s;
       padding: 12px 15px;
       border: 1px solid #ddd;
       border-radius: 8px;
