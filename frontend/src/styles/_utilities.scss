@@ -1,0 +1,338 @@
+// ============================================
+// UTILITY CLASSES - Global Reusable Styles
+// ============================================
+// This file provides utility classes that can be used directly in TSX files
+// Import in index.scss: @use './styles/utilities';
+
+@use './variables' as *;
+
+// ============================================
+// BUTTON CLASSES
+// ============================================
+
+.btn {
+    @include btn-base;
+}
+
+.btn-primary {
+    @include btn-primary;
+}
+
+.btn-secondary {
+    @include btn-secondary;
+}
+
+.btn-accent {
+    @include btn-accent;
+}
+
+.btn-danger {
+    @include btn-base;
+    background-color: $error;
+    color: $white;
+
+    &:hover:not(:disabled) {
+        background-color: darken($error, 10%);
+    }
+}
+
+.btn-success {
+    @include btn-base;
+    background-color: $success;
+    color: $white;
+
+    &:hover:not(:disabled) {
+        background-color: darken($success, 10%);
+    }
+}
+
+.btn-sm {
+    padding: $btn-padding-sm;
+    font-size: $font-size-sm;
+}
+
+.btn-lg {
+    padding: $btn-padding-lg;
+    font-size: $font-size-lg;
+}
+
+// ============================================
+// FORM INPUT CLASSES
+// ============================================
+
+.form-input {
+    @include input-base;
+}
+
+.form-select {
+    @include input-base;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right $spacing-3 center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: $spacing-10;
+}
+
+.form-textarea {
+    @include input-base;
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-label {
+    display: block;
+    font-weight: $font-weight-medium;
+    margin-bottom: $spacing-2;
+    color: $gray-700;
+}
+
+.form-group {
+    margin-bottom: $spacing-4;
+}
+
+// ============================================
+// TEXT CLASSES
+// ============================================
+
+.text-primary {
+    color: $primary;
+}
+
+.text-secondary {
+    color: $gray-500;
+}
+
+.text-success {
+    color: $success;
+}
+
+.text-error {
+    color: $error;
+}
+
+.text-warning {
+    color: $warning;
+}
+
+.text-muted {
+    color: $gray-400;
+}
+
+// Text sizes
+.text-xs {
+    font-size: $font-size-xs;
+}
+
+.text-sm {
+    font-size: $font-size-sm;
+}
+
+.text-base {
+    font-size: $font-size-base;
+}
+
+.text-lg {
+    font-size: $font-size-lg;
+}
+
+.text-xl {
+    font-size: $font-size-xl;
+}
+
+.text-2xl {
+    font-size: $font-size-2xl;
+}
+
+.text-3xl {
+    font-size: $font-size-3xl;
+}
+
+// Text weights
+.font-normal {
+    font-weight: $font-weight-normal;
+}
+
+.font-medium {
+    font-weight: $font-weight-medium;
+}
+
+.font-semibold {
+    font-weight: $font-weight-semibold;
+}
+
+.font-bold {
+    font-weight: $font-weight-bold;
+}
+
+// ============================================
+// CARD CLASSES
+// ============================================
+
+.card {
+    @include card;
+}
+
+.card-header {
+    padding-bottom: $spacing-4;
+    margin-bottom: $spacing-4;
+    border-bottom: 1px solid $gray-200;
+}
+
+.card-body {
+    // Default body styling
+}
+
+.card-footer {
+    padding-top: $spacing-4;
+    margin-top: $spacing-4;
+    border-top: 1px solid $gray-200;
+}
+
+// ============================================
+// SPACING UTILITIES
+// ============================================
+
+.mt-1 {
+    margin-top: $spacing-1;
+}
+
+.mt-2 {
+    margin-top: $spacing-2;
+}
+
+.mt-3 {
+    margin-top: $spacing-3;
+}
+
+.mt-4 {
+    margin-top: $spacing-4;
+}
+
+.mt-6 {
+    margin-top: $spacing-6;
+}
+
+.mt-8 {
+    margin-top: $spacing-8;
+}
+
+.mb-1 {
+    margin-bottom: $spacing-1;
+}
+
+.mb-2 {
+    margin-bottom: $spacing-2;
+}
+
+.mb-3 {
+    margin-bottom: $spacing-3;
+}
+
+.mb-4 {
+    margin-bottom: $spacing-4;
+}
+
+.mb-6 {
+    margin-bottom: $spacing-6;
+}
+
+.mb-8 {
+    margin-bottom: $spacing-8;
+}
+
+.p-2 {
+    padding: $spacing-2;
+}
+
+.p-3 {
+    padding: $spacing-3;
+}
+
+.p-4 {
+    padding: $spacing-4;
+}
+
+.p-6 {
+    padding: $spacing-6;
+}
+
+.p-8 {
+    padding: $spacing-8;
+}
+
+// ============================================
+// FLEX UTILITIES
+// ============================================
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.gap-2 {
+    gap: $spacing-2;
+}
+
+.gap-3 {
+    gap: $spacing-3;
+}
+
+.gap-4 {
+    gap: $spacing-4;
+}
+
+.gap-6 {
+    gap: $spacing-6;
+}
+
+// ============================================
+// ALERT / MESSAGE CLASSES
+// ============================================
+
+.alert {
+    padding: $spacing-3 $spacing-4;
+    border-radius: $border-radius;
+    font-size: $font-size-sm;
+    margin-bottom: $spacing-4;
+}
+
+.alert-error {
+    background-color: rgba($error, 0.1);
+    color: $error;
+    border: 1px solid rgba($error, 0.2);
+}
+
+.alert-success {
+    background-color: rgba($success, 0.1);
+    color: $success;
+    border: 1px solid rgba($success, 0.2);
+}
+
+.alert-warning {
+    background-color: rgba($warning, 0.1);
+    color: darken($warning, 15%);
+    border: 1px solid rgba($warning, 0.2);
+}
+
+.alert-info {
+    background-color: rgba($primary, 0.1);
+    color: $primary;
+    border: 1px solid rgba($primary, 0.2);
+}

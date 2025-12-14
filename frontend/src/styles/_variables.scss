@@ -1,0 +1,308 @@
+// ============================================
+// DESIGN TOKENS - Central Theme Variables
+// ============================================
+// Import this file in any SCSS file that needs access to theme variables:
+// @use '../styles/variables' as *;
+
+// ============================================
+// COLORS - Base Palette
+// ============================================
+
+// Primary colors
+$primary: #3b82f6; // Main brand blue
+$primary-light: #60a5fa; // Lighter variant
+$primary-dark: #2563eb; // Darker variant
+
+// Secondary / Accent colors
+$accent: #ff6a00; // Orange accent (Join buttons, CTAs)
+$accent-light: #ff8533;
+$accent-dark: #e55c00;
+
+// Success / Error / Warning
+$success: #10b981; // Green
+$success-light: #34d399;
+$error: #ef4444; // Red
+$error-light: #f87171;
+$warning: #f59e0b; // Amber
+$warning-light: #fbbf24;
+
+// Neutral colors (grays)
+$gray-50: #f9fafb;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+$gray-400: #9ca3af;
+$gray-500: #6b7280;
+$gray-600: #4b5563;
+$gray-700: #374151;
+$gray-800: #1f2937;
+$gray-900: #111827;
+
+// Pure colors
+$white: #ffffff;
+$black: #000000;
+
+// ============================================
+// TYPOGRAPHY
+// ============================================
+
+$font-family-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-mono: 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+
+// Font sizes
+$font-size-xs: 0.75rem; // 12px
+$font-size-sm: 0.875rem; // 14px
+$font-size-base: 1rem; // 16px
+$font-size-lg: 1.125rem; // 18px
+$font-size-xl: 1.25rem; // 20px
+$font-size-2xl: 1.5rem; // 24px
+$font-size-3xl: 1.875rem; // 30px
+$font-size-4xl: 2.25rem; // 36px
+
+// Font weights
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Line heights
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+// ============================================
+// SPACING
+// ============================================
+
+$spacing-1: 0.25rem; // 4px
+$spacing-2: 0.5rem; // 8px
+$spacing-3: 0.75rem; // 12px
+$spacing-4: 1rem; // 16px
+$spacing-5: 1.25rem; // 20px
+$spacing-6: 1.5rem; // 24px
+$spacing-8: 2rem; // 32px
+$spacing-10: 2.5rem; // 40px
+$spacing-12: 3rem; // 48px
+$spacing-16: 4rem; // 64px
+
+// ============================================
+// BORDERS & RADIUS
+// ============================================
+
+$border-width: 1px;
+$border-radius-sm: 4px;
+$border-radius: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+$border-radius-full: 9999px;
+
+// ============================================
+// SHADOWS
+// ============================================
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+// ============================================
+// TRANSITIONS
+// ============================================
+
+$transition-fast: 150ms ease;
+$transition-normal: 250ms ease;
+$transition-slow: 350ms ease;
+
+// ============================================
+// Z-INDEX
+// ============================================
+
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-fixed: 300;
+$z-modal-backdrop: 400;
+$z-modal: 500;
+$z-tooltip: 600;
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+// ============================================
+// BUTTON STYLES
+// ============================================
+
+// Primary Button
+$btn-primary-bg: $primary;
+$btn-primary-color: $white;
+$btn-primary-hover-bg: $primary-dark;
+
+// Secondary Button
+$btn-secondary-bg: $gray-200;
+$btn-secondary-color: $gray-800;
+$btn-secondary-hover-bg: $gray-300;
+
+// Accent/CTA Button
+$btn-accent-bg: linear-gradient(90deg, $accent, $accent-dark);
+$btn-accent-color: $white;
+$btn-accent-shadow: 0 6px 18px rgba(255, 77, 0, 0.25);
+
+// Danger Button
+$btn-danger-bg: $error;
+$btn-danger-color: $white;
+$btn-danger-hover-bg: $error-light;
+
+// Button sizing
+$btn-padding-sm: $spacing-2 $spacing-3;
+$btn-padding: $spacing-3 $spacing-5;
+$btn-padding-lg: $spacing-4 $spacing-6;
+
+// ============================================
+// FORM INPUTS
+// ============================================
+
+$input-bg: $white;
+$input-border: $gray-300;
+$input-border-focus: $primary;
+$input-text: $gray-800;
+$input-placeholder: $gray-400;
+$input-padding: $spacing-3 $spacing-4;
+$input-radius: $border-radius;
+
+// ============================================
+// CARDS
+// ============================================
+
+$card-bg: $white;
+$card-border: $gray-200;
+$card-radius: $border-radius-lg;
+$card-padding: $spacing-6;
+$card-shadow: $shadow-md;
+
+// ============================================
+// NAVBAR
+// ============================================
+
+$navbar-height: 64px;
+$navbar-bg: rgba(255, 255, 255, 0.95);
+$navbar-shadow: $shadow;
+
+// ============================================
+// MIXINS - Reusable Styles
+// ============================================
+
+// Button base mixin
+@mixin btn-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: $btn-padding;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    border-radius: $border-radius;
+    cursor: pointer;
+    transition: all $transition-fast;
+    border: none;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+// Primary button mixin
+@mixin btn-primary {
+    @include btn-base;
+    background-color: $btn-primary-bg;
+    color: $btn-primary-color;
+
+    &:hover:not(:disabled) {
+        background-color: $btn-primary-hover-bg;
+    }
+}
+
+// Secondary button mixin
+@mixin btn-secondary {
+    @include btn-base;
+    background-color: $btn-secondary-bg;
+    color: $btn-secondary-color;
+
+    &:hover:not(:disabled) {
+        background-color: $btn-secondary-hover-bg;
+    }
+}
+
+// Accent/CTA button mixin
+@mixin btn-accent {
+    @include btn-base;
+    background: $btn-accent-bg;
+    color: $btn-accent-color;
+    box-shadow: $btn-accent-shadow;
+
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(255, 77, 0, 0.35);
+    }
+}
+
+// Card mixin
+@mixin card {
+    background-color: $card-bg;
+    border: 1px solid $card-border;
+    border-radius: $card-radius;
+    padding: $card-padding;
+    box-shadow: $card-shadow;
+}
+
+// Input mixin
+@mixin input-base {
+    width: 100%;
+    padding: $input-padding;
+    font-size: $font-size-base;
+    border: 1px solid $input-border;
+    border-radius: $input-radius;
+    background-color: $input-bg;
+    color: $input-text;
+    transition: border-color $transition-fast;
+
+    &::placeholder {
+        color: $input-placeholder;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: $input-border-focus;
+        box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
+}
+
+// Responsive breakpoint mixins
+@mixin sm {
+    @media (min-width: $breakpoint-sm) {
+        @content;
+    }
+}
+
+@mixin md {
+    @media (min-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+@mixin lg {
+    @media (min-width: $breakpoint-lg) {
+        @content;
+    }
+}
+
+@mixin xl {
+    @media (min-width: $breakpoint-xl) {
+        @content;
+    }
+}
