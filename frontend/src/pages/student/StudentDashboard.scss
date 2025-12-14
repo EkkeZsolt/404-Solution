@@ -1,0 +1,57 @@
+.diak-page {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 80px; // Account for fixed navbar
+
+  .diak-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+  }
+
+  .no-classrooms {
+    text-align: center;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .classroom-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .classroom-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px var(--card-shadow);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.25rem;
+        color: var(--text-color);
+      }
+
+      p {
+        margin: 0;
+        color: var(--text-muted);
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px var(--card-shadow);
+      }
+    }
+  }
+}

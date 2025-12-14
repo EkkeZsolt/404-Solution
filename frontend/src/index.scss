@@ -1,11 +1,81 @@
+@use './styles/utilities';
+
+// ============================================
+// THEME SYSTEM - CSS Variables for 4 Themes
+// ============================================
+// To change theme colors, modify the variables below
+// Each theme has a complete set of color variables
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  // ========================================
+  // 1. LIGHT THEME (Default)
+  // ========================================
+
+  // Background colors
+  --bg-color: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+
+  // Text colors
+  --text-color: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-light: #9ca3af;
+
+  // Primary colors (blue)
+  --primary-color: #3b82f6;
+  --primary-light: #60a5fa;
+  --primary-dark: #2563eb;
+
+  // Accent colors (orange)
+  --accent-color: #ff6a00;
+  --accent-light: #ff8533;
+  --accent-dark: #e55c00;
+
+  // Status colors
+  --success-color: #10b981;
+  --success-light: #34d399;
+  --error-color: #ef4444;
+  --error-light: #f87171;
+  --warning-color: #f59e0b;
+  --warning-light: #fbbf24;
+
+  // Card & Container colors
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+
+  // Border & Divider colors
+  --border-color: #e5e7eb;
+  --divider-color: #d1d5db;
+
+  // Interactive states
+  --hover-bg: #f3f4f6;
+  --active-bg: #e5e7eb;
+  --focus-ring: rgba(59, 130, 246, 0.3);
+
+  // Input colors
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus-border: #3b82f6;
+  --input-placeholder: #9ca3af;
+
+  // Navbar colors
+  --navbar-bg: rgba(255, 255, 255, 0.95);
+  --navbar-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  // Modal colors
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --modal-bg: #ffffff;
+
+  // Typography defaults
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: var(--text-color);
+  background-color: var(--bg-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,56 +83,603 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+// ========================================
+// 2. LIGHT WARM THEME
+// ========================================
+body.light-warm {
+  // Background colors
+  --bg-color: #fdf6e3;
+  --bg-secondary: #f5eccd;
+  --bg-tertiary: #eee8d5;
+
+  // Text colors
+  --text-color: #5c4f3e;
+  --text-secondary: #73654f;
+  --text-muted: #93a1a1;
+  --text-light: #b0a090;
+
+  // Primary colors (magenta/pink)
+  --primary-color: #d33682;
+  --primary-light: #e05895;
+  --primary-dark: #b02669;
+
+  // Accent colors (teal)
+  --accent-color: #2aa198;
+  --accent-light: #3fbfb5;
+  --accent-dark: #1f7a73;
+
+  // Status colors
+  --success-color: #859900;
+  --success-light: #a3b800;
+  --error-color: #dc322f;
+  --error-light: #e55855;
+  --warning-color: #cb4b16;
+  --warning-light: #e56839;
+
+  // Card & Container colors
+  --card-bg: #fdf6e3;
+  --card-border: #d8d0ba;
+  --card-shadow: rgba(92, 79, 62, 0.1);
+
+  // Border & Divider colors
+  --border-color: #d8d0ba;
+  --divider-color: #c8c0aa;
+
+  // Interactive states
+  --hover-bg: #eee8d5;
+  --active-bg: #e0d8c5;
+  --focus-ring: rgba(211, 54, 130, 0.3);
+
+  // Input colors
+  --input-bg: #fdf6e3;
+  --input-border: #d8d0ba;
+  --input-focus-border: #d33682;
+  --input-placeholder: #93a1a1;
+
+  // Navbar colors
+  --navbar-bg: rgba(253, 246, 227, 0.95);
+  --navbar-shadow: 0 1px 3px rgba(92, 79, 62, 0.1);
+
+  // Modal colors
+  --modal-overlay: rgba(92, 79, 62, 0.5);
+  --modal-bg: #fdf6e3;
 }
-a:hover {
-  color: #535bf2;
+
+// ========================================
+// 3. DARK THEME
+// ========================================
+body.dark {
+  // Background colors
+  --bg-color: #1f2937;
+  --bg-secondary: #374151;
+  --bg-tertiary: #4b5563;
+
+  // Text colors
+  --text-color: #f9fafb;
+  --text-secondary: #e5e7eb;
+  --text-muted: #9ca3af;
+  --text-light: #6b7280;
+
+  // Primary colors (light blue)
+  --primary-color: #60a5fa;
+  --primary-light: #93c5fd;
+  --primary-dark: #3b82f6;
+
+  // Accent colors (orange)
+  --accent-color: #fb923c;
+  --accent-light: #fdba74;
+  --accent-dark: #f97316;
+
+  // Status colors
+  --success-color: #34d399;
+  --success-light: #6ee7b7;
+  --error-color: #f87171;
+  --error-light: #fca5a5;
+  --warning-color: #fbbf24;
+  --warning-light: #fcd34d;
+
+  // Card & Container colors
+  --card-bg: #374151;
+  --card-border: #4b5563;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+
+  // Border & Divider colors
+  --border-color: #4b5563;
+  --divider-color: #6b7280;
+
+  // Interactive states
+  --hover-bg: #4b5563;
+  --active-bg: #6b7280;
+  --focus-ring: rgba(96, 165, 250, 0.3);
+
+  // Input colors
+  --input-bg: #374151;
+  --input-border: #4b5563;
+  --input-focus-border: #60a5fa;
+  --input-placeholder: #6b7280;
+
+  // Navbar colors
+  --navbar-bg: rgba(31, 41, 55, 0.95);
+  --navbar-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+  // Modal colors
+  --modal-overlay: rgba(0, 0, 0, 0.7);
+  --modal-bg: #374151;
+
+  color-scheme: dark;
+}
+
+// ========================================
+// 4. DARK DEEP THEME (OLED)
+// ========================================
+body.dark-deep {
+  // Background colors
+  --bg-color: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #121212;
+
+  // Text colors
+  --text-color: #e5e5e5;
+  --text-secondary: #cccccc;
+  --text-muted: #888888;
+  --text-light: #666666;
+
+  // Primary colors (blue)
+  --primary-color: #3b82f6;
+  --primary-light: #60a5fa;
+  --primary-dark: #2563eb;
+
+  // Accent colors (cyan)
+  --accent-color: #22d3ee;
+  --accent-light: #67e8f9;
+  --accent-dark: #06b6d4;
+
+  // Status colors
+  --success-color: #10b981;
+  --success-light: #34d399;
+  --error-color: #f87171;
+  --error-light: #fca5a5;
+  --warning-color: #fbbf24;
+  --warning-light: #fcd34d;
+
+  // Card & Container colors
+  --card-bg: #121212;
+  --card-border: #2a2a2a;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+
+  // Border & Divider colors
+  --border-color: #333333;
+  --divider-color: #444444;
+
+  // Interactive states
+  --hover-bg: #1a1a1a;
+  --active-bg: #2a2a2a;
+  --focus-ring: rgba(59, 130, 246, 0.4);
+
+  // Input colors
+  --input-bg: #121212;
+  --input-border: #333333;
+  --input-focus-border: #3b82f6;
+  --input-placeholder: #666666;
+
+  // Navbar colors
+  --navbar-bg: rgba(0, 0, 0, 0.95);
+  --navbar-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+
+  // Modal colors
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+  --modal-bg: #121212;
+
+  color-scheme: dark;
+}
+
+// ============================================
+// GLOBAL BASE STYLES
+// ============================================
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#root {
+  width: 100%;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+// ============================================
+// TYPOGRAPHY
+// ============================================
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-color);
+  margin-top: 0;
+  line-height: 1.2;
 }
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--primary-light);
+  }
+}
+
+// ============================================
+// LISTS (UL, OL, LI)
+// ============================================
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul.styled-list,
+ol.styled-list {
+  padding-left: 1.5rem;
+
+  li {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    position: relative;
+
+    &::before {
+      content: '•';
+      color: var(--primary-color);
+      position: absolute;
+      left: -1rem;
+    }
+  }
+}
+
+// ============================================
+// CONTAINERS
+// ============================================
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.container-sm {
+  max-width: 640px;
+}
+
+.container-md {
+  max-width: 768px;
+}
+
+.container-lg {
+  max-width: 1024px;
+}
+
+.container-xl {
+  max-width: 1280px;
+}
+
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  padding-top: 80px; // Account for fixed navbar
+}
+
+// ============================================
+// CARDS
+// ============================================
+
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover {
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px var(--card-shadow);
+  }
+}
+
+.card-header {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.card-footer {
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--divider-color);
+}
+
+// ============================================
+// FORM ELEMENTS (Global overrides)
+// ============================================
+
+input,
+select,
+textarea {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: var(--text-color);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: var(--input-placeholder);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ============================================
+// BUTTONS (Global overrides)
+// ============================================
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--card-bg);
+  color: var(--text-color);
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--primary-color);
+    background-color: var(--hover-bg);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+// Primary button override
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #ffffff !important;
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
   }
-  a:hover {
-    color: #747bff;
+}
+
+// Secondary button override
+.btn-secondary {
+  background-color: var(--bg-tertiary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-color) !important;
+
+  &:hover:not(:disabled) {
+    background-color: var(--hover-bg) !important;
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+// Accent button override
+.btn-accent {
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-dark)) !important;
+  border-color: var(--accent-color) !important;
+  color: #ffffff !important;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 106, 0, 0.25);
   }
+}
+
+// Danger button override
+.btn-danger {
+  background-color: var(--error-color) !important;
+  border-color: var(--error-color) !important;
+  color: #ffffff !important;
+
+  &:hover:not(:disabled) {
+    background-color: var(--error-light) !important;
+    border-color: var(--error-light) !important;
+  }
+}
+
+// Success button override
+.btn-success {
+  background-color: var(--success-color) !important;
+  border-color: var(--success-color) !important;
+  color: #ffffff !important;
+
+  &:hover:not(:disabled) {
+    background-color: var(--success-light) !important;
+    border-color: var(--success-light) !important;
+  }
+}
+
+// ============================================
+// TABLES
+// ============================================
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  overflow: hidden;
+
+  th,
+  td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--divider-color);
+  }
+
+  th {
+    background-color: var(--bg-tertiary);
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  tr:hover {
+    background-color: var(--hover-bg);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+// ============================================
+// ALERTS & MESSAGES
+// ============================================
+
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.alert-success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--success-color);
+  color: var(--success-color);
+}
+
+.alert-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+}
+
+.alert-warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--warning-color);
+  color: var(--warning-color);
+}
+
+.alert-info {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+// ============================================
+// UTILITY CLASSES
+// ============================================
+
+.text-primary {
+  color: var(--primary-color);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-success {
+  color: var(--success-color);
+}
+
+.text-error {
+  color: var(--error-color);
+}
+
+.text-warning {
+  color: var(--warning-color);
+}
+
+.bg-primary {
+  background-color: var(--bg-color);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+.bg-card {
+  background-color: var(--card-bg);
+}
+
+// Loading states
+.loading-text,
+.error-text {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.error-text {
+  color: var(--error-color);
 }

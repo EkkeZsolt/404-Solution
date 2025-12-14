@@ -11,9 +11,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +24,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -47,9 +50,9 @@
 .site-header {
   display: flex;
   justify-content: space-between; // Szétdobja a két elemet
-  align-items: center;          // Függőlegesen középre igazítja őket
-  width: 100%;                  // Teljes szélességű legyen
-  margin-bottom: 2rem;          // EZ A LÉNYEG: Helyet hagy a kép felett
+  align-items: center; // Függőlegesen középre igazítja őket
+  width: 100%; // Teljes szélességű legyen
+  margin-bottom: 2rem; // EZ A LÉNYEG: Helyet hagy a kép felett
 }
 
 .header-title {
@@ -58,26 +61,29 @@
 }
 
 .auth-btn {
-  // Ezt a gombot a képernyőképed alapján sötétre stilizáljuk
-  background-color: #2a2a2a;
-  color: #f0f0f0;
-  border: 1px solid #444;
+  // Ezt a gombot a képernyőképed alapján sötétre stilizáljuk -> MOST FEHÉRRE ÁLLÍTJUK
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ccc;
   padding: 0.6rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #333;
+    background-color: #f0f0f0;
   }
 }
 
 .app-main-content {
-  max-width: 1200px; /* Vagy amekkora szélességet szeretnél */
+  max-width: 1200px;
+  /* Vagy amekkora szélességet szeretnél */
   margin: 0 auto;
-  padding: 0 1rem; /* Kisebb képernyőkön is legyen egy kis padding */
+  padding: 0 1rem;
+  /* Kisebb képernyőkön is legyen egy kis padding */
 
   @media (max-width: 768px) {
-    max-width: 100%; /* Telefonon vegye fel a teljes szélességet */
+    max-width: 100%;
+    /* Telefonon vegye fel a teljes szélességet */
   }
 }
