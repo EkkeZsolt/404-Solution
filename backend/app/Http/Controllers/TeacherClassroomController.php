@@ -9,7 +9,7 @@ use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use App\Models\JoinClassroom;
+
 use App\Models\Result;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Student;
@@ -26,8 +26,8 @@ class TeacherClassroomController extends Controller
             ->get(['id', 'name']);
 
         return response()->json([
-            'teacher_id'  => $teacher->id,
-            'classrooms'  => $classrooms,
+            'teacher_id' => $teacher->id,
+            'classrooms' => $classrooms,
         ]);
     }
 
@@ -46,43 +46,69 @@ class TeacherClassroomController extends Controller
 
     public function getQuizResultsWithScores(Request $request)
     {
+        // 1. Validáció
         $validated = $request->validate([
             'quiz_id' => ['required', 'integer', 'exists:quizzes,id'],
         ]);
 
-        $quiz = Quiz::findOrFail($validated['quiz_id']);
+        $quiz = \App\Models\Quiz::findOrFail($validated['quiz_id']);
 
-        $results = Result::where('quiz_id', $quiz->id)->get();
+        // 2. Eredmények lekérése
+        $results = \App\Models\Result::where('quiz_id', $quiz->id)->get();
 
         $output = collect();
 
         foreach ($results as $result) {
+            // --- A: Diák nevének lekérése ---
+            $student = \App\Models\User::find($result->student_id);
+            $studentName = $student ? $student->name : 'Ismeretlen';
+
+            // --- B: Részletes válaszok betöltése a kérdésekkel együtt ---
             $detailed = \App\Models\DetailedResult::where('result_id', $result->id)
-                ->with(['question' => function ($q) {
-                    $q->select(
-                        'id',
-                        'question_text',
-                        'max_points',
-                        'correct_answers'
-                    );
-                }])
+                ->with([
+                    'question' => function ($q) {
+                        // FONTOS: Itt le kell kérni a válasz oszlopokat is a szövegcseréhez!
+                        $q->select(
+                            'id',
+                            'question_text',
+                            'max_points',
+                            'correct_answers', // JSON
+                            'answer_1',
+                            'answer_2',
+                            'answer_3',
+                            'answer_4'
+                        );
+                    }
+                ])
                 ->get();
 
             $totalScore = 0.0;
-            $details    = [];
+            $details = [];
 
             foreach ($detailed as $dr) {
-                $q          = $dr->question;
-                $answers    = $dr->answers ?? [];
-                $correct    = $q->correct_answers ?? [];
+                $q = $dr->question;
+
+                // --- C: HIBAJAVÍTÁS (String -> Array konverzió) ---
+                // Ez oldja meg a "count(): Argument #1 must be of type Countable" hibát
+                $answersRaw = $dr->answers;
+                $correctRaw = $q->correct_answers;
+
+                // Ha stringként jön (pl. SQLite miatt), alakítsuk tömbbé
+                $answers = is_string($answersRaw) ? json_decode($answersRaw, true) : $answersRaw;
+                $correct = is_string($correctRaw) ? json_decode($correctRaw, true) : $correctRaw;
+
+                // Biztosítjuk, hogy üres tömb legyen, ha null
+                $answers = $answers ?? [];
+                $correct = $correct ?? [];
 
                 if (empty($correct)) {
                     continue;
                 }
 
-                $weight           = $q->max_points / count($correct);
-                $selectedCorrect  = count(array_intersect($answers, $correct));
-                $wrongAnswers     = count(array_diff($answers, $correct));
+                // --- D: Pontszámítás ---
+                $weight = $q->max_points / count($correct);
+                $selectedCorrect = count(array_intersect($answers, $correct));
+                $wrongAnswers = count(array_diff($answers, $correct));
 
                 $questionScore = ($selectedCorrect * $weight) - ($wrongAnswers * $weight);
 
@@ -92,60 +118,79 @@ class TeacherClassroomController extends Controller
 
                 $totalScore += $questionScore;
 
+                // --- E: Kulcsok cseréje szövegre (answer_1 -> Budapest) ---
+                $answerMap = [
+                    'answer_1' => $q->answer_1,
+                    'answer_2' => $q->answer_2,
+                    'answer_3' => $q->answer_3,
+                    'answer_4' => $q->answer_4,
+                ];
+
+                // Helyes válaszok szövegesítése
+                $correctText = array_map(function ($key) use ($answerMap) {
+                    return $answerMap[$key] ?? $key;
+                }, $correct);
+
+                // Diák válaszainak szövegesítése
+                $studentAnswersText = array_map(function ($key) use ($answerMap) {
+                    return $answerMap[$key] ?? $key;
+                }, $answers);
+
                 $details[] = [
-                    'question_id'        => $q->id,
-                    'question_text'      => $q->question_text,
-                    'max_points'         => $q->max_points,
-                    'correct_answers'    => $correct,
-                    'student_answers'    => $answers,
+                    'question_id' => $q->id,
+                    'question_text' => $q->question_text,
+                    'max_points' => $q->max_points,
+                    'correct_answers' => $correctText,       // Most már szöveg
+                    'student_answers' => $studentAnswersText, // Most már szöveg
                     'score_for_question' => round($questionScore, 2),
                 ];
             }
 
+            // --- F: Kimenet összeállítása ---
             $output->push([
-                'student_id'   => $result->student_id,
-                'total_score'  => round($totalScore, 2),
-                'details'      => $details,
+                'student_id' => $result->student_id,
+                'student_name' => $studentName, // Név hozzáadva
+                'total_score' => round($totalScore, 2),
+                'details' => $details,
             ]);
         }
 
         return response()->json([
-            'quiz_id'   => $quiz->id,
+            'quiz_id' => $quiz->id,
             'quiz_name' => $quiz->name,
-            'results'   => $output,
+            'results' => $output,
         ]);
     }
-
     public function postCreateClassroom(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'          => ['required', 'string', 'max:255'],
-            'visibility'    => ['required', Rule::in(['public', 'private'])],
+            'name' => ['required', 'string', 'max:255'],
+            'visibility' => ['required', Rule::in(['public', 'private'])],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation error',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         $data = [
-            'owner_id'      => auth()->id(),
-            'name'          => $request->input('name'),
-            'visibility'    => $request->input('visibility'),
+            'owner_id' => auth()->id(),
+            'name' => $request->input('name'),
+            'visibility' => $request->input('visibility'),
             'classroom_code' => $this->generateClassroomCode(),
         ];
 
         $classroom = Classroom::create($data);
 
         return response()->json([
-            'message'   => 'Classroom created successfully',
+            'message' => 'Classroom created successfully',
             'classroom' => [
-                'id'             => $classroom->id,
-                'owner_id'       => $classroom->owner_id,
-                'name'           => $classroom->name,
-                'visibility'     => $classroom->visibility,
+                'id' => $classroom->id,
+                'owner_id' => $classroom->owner_id,
+                'name' => $classroom->name,
+                'visibility' => $classroom->visibility,
                 'classroom_code' => $classroom->classroom_code,
             ],
         ], 201);
@@ -164,18 +209,18 @@ class TeacherClassroomController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'classroom_id' => ['required', 'integer', Rule::exists('classrooms', 'id')],
-            'name'         => ['required', 'string', 'max:255'],
-            'allow_back'   => ['sometimes', 'boolean'],
+            'name' => ['required', 'string', 'max:255'],
+            'allow_back' => ['sometimes', 'boolean'],
 
-            'questions'          => ['required', 'array', 'min:1'],
-            'questions.*.question_text'  => ['required', 'string'],
+            'questions' => ['required', 'array', 'min:1'],
+            'questions.*.question_text' => ['required', 'string'],
 
-            'questions.*.answer_1'       => ['required', 'string'],
-            'questions.*.answer_2'       => ['required', 'string'],
-            'questions.*.answer_3'       => ['required', 'string'],
-            'questions.*.answer_4'       => ['required', 'string'],
+            'questions.*.answer_1' => ['required', 'string'],
+            'questions.*.answer_2' => ['required', 'string'],
+            'questions.*.answer_3' => ['required', 'string'],
+            'questions.*.answer_4' => ['required', 'string'],
 
-            'questions.*.max_points'     => ['required', 'integer', 'min:1'],
+            'questions.*.max_points' => ['required', 'integer', 'min:1'],
 
             'questions.*.correct_answers' => [
                 'required',
@@ -195,7 +240,7 @@ class TeacherClassroomController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation error',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -209,20 +254,20 @@ class TeacherClassroomController extends Controller
 
         $quiz = Quiz::create([
             'classroom_id' => $request->input('classroom_id'),
-            'name'         => $request->input('name'),
-            'allow_back'   => $request->boolean('allow_back') ? 1 : 0,
+            'name' => $request->input('name'),
+            'allow_back' => $request->boolean('allow_back') ? 1 : 0,
         ]);
 
         $questionsData = array_map(function ($q) use ($quiz) {
             return [
-                'quiz_id'          => $quiz->id,
-                'question_text'    => $q['question_text'],
-                'answer_1'         => $q['answer_1'],
-                'answer_2'         => $q['answer_2'],
-                'answer_3'         => $q['answer_3'],
-                'answer_4'         => $q['answer_4'],
-                'max_points'       => $q['max_points'],
-                'correct_answers'  => json_encode($q['correct_answers']),
+                'quiz_id' => $quiz->id,
+                'question_text' => $q['question_text'],
+                'answer_1' => $q['answer_1'],
+                'answer_2' => $q['answer_2'],
+                'answer_3' => $q['answer_3'],
+                'answer_4' => $q['answer_4'],
+                'max_points' => $q['max_points'],
+                'correct_answers' => json_encode($q['correct_answers']),
             ];
         }, $request->input('questions'));
 
@@ -232,20 +277,20 @@ class TeacherClassroomController extends Controller
 
         return response()->json([
             'message' => 'Quiz and its questions created successfully',
-            'quiz'    => [
-                'id'           => $quizWithQuestions->id,
+            'quiz' => [
+                'id' => $quizWithQuestions->id,
                 'classroom_id' => $quizWithQuestions->classroom_id,
-                'name'         => $quizWithQuestions->name,
-                'allow_back'   => (int) $quizWithQuestions->allow_back,
-                'questions'    => $quizWithQuestions->questions->map(function ($q) {
+                'name' => $quizWithQuestions->name,
+                'allow_back' => (int) $quizWithQuestions->allow_back,
+                'questions' => $quizWithQuestions->questions->map(function ($q) {
                     return [
-                        'id'              => $q->id,
-                        'question_text'   => $q->question_text,
-                        'answer_1'        => $q->answer_1,
-                        'answer_2'        => $q->answer_2,
-                        'answer_3'        => $q->answer_3,
-                        'answer_4'        => $q->answer_4,
-                        'max_points'      => $q->max_points,
+                        'id' => $q->id,
+                        'question_text' => $q->question_text,
+                        'answer_1' => $q->answer_1,
+                        'answer_2' => $q->answer_2,
+                        'answer_3' => $q->answer_3,
+                        'answer_4' => $q->answer_4,
+                        'max_points' => $q->max_points,
                         'correct_answers' => $q->correct_answers,
                     ];
                 }),
@@ -256,22 +301,22 @@ class TeacherClassroomController extends Controller
     public function postUpdateQuizWithQuestions(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'quiz_id'       => ['required', 'integer', Rule::exists('quizzes', 'id')],
-            'classroom_id'  => ['required', 'integer', Rule::exists('classrooms', 'id')],
+            'quiz_id' => ['required', 'integer', Rule::exists('quizzes', 'id')],
+            'classroom_id' => ['required', 'integer', Rule::exists('classrooms', 'id')],
 
-            'name'          => ['required', 'string', 'max:255'],
-            'allow_back'    => ['sometimes', 'boolean'],
+            'name' => ['required', 'string', 'max:255'],
+            'allow_back' => ['sometimes', 'boolean'],
 
-            'questions'          => ['required', 'array', 'min:1'],
-            'questions.*.id'     => ['required', 'integer', Rule::exists('questions', 'id')],
-            'questions.*.question_text'  => ['required', 'string'],
+            'questions' => ['required', 'array', 'min:1'],
+            'questions.*.id' => ['required', 'integer', Rule::exists('questions', 'id')],
+            'questions.*.question_text' => ['required', 'string'],
 
-            'questions.*.answer_1'       => ['required', 'string'],
-            'questions.*.answer_2'       => ['required', 'string'],
-            'questions.*.answer_3'       => ['required', 'string'],
-            'questions.*.answer_4'       => ['required', 'string'],
+            'questions.*.answer_1' => ['required', 'string'],
+            'questions.*.answer_2' => ['required', 'string'],
+            'questions.*.answer_3' => ['required', 'string'],
+            'questions.*.answer_4' => ['required', 'string'],
 
-            'questions.*.max_points'     => ['required', 'integer', 'min:1'],
+            'questions.*.max_points' => ['required', 'integer', 'min:1'],
 
             'questions.*.correct_answers' => [
                 'required',
@@ -291,13 +336,13 @@ class TeacherClassroomController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation error',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         $quiz = Quiz::with('questions')->findOrFail($request->input('quiz_id'));
 
-        if ($quiz->classroom_id !== (int)$request->input('classroom_id')) {
+        if ($quiz->classroom_id !== (int) $request->input('classroom_id')) {
             return response()->json([
                 'message' => 'The quiz does not belong to the specified classroom.',
             ], 400);
@@ -311,7 +356,7 @@ class TeacherClassroomController extends Controller
         }
 
         $quiz->update([
-            'name'       => $request->input('name'),
+            'name' => $request->input('name'),
             'allow_back' => $request->boolean('allow_back') ? 1 : 0,
         ]);
 
@@ -319,12 +364,12 @@ class TeacherClassroomController extends Controller
             $question = $quiz->questions()->where('id', $qData['id'])->firstOrFail();
 
             $question->update([
-                'question_text'   => $qData['question_text'],
-                'answer_1'        => $qData['answer_1'],
-                'answer_2'        => $qData['answer_2'],
-                'answer_3'        => $qData['answer_3'],
-                'answer_4'        => $qData['answer_4'],
-                'max_points'      => $qData['max_points'],
+                'question_text' => $qData['question_text'],
+                'answer_1' => $qData['answer_1'],
+                'answer_2' => $qData['answer_2'],
+                'answer_3' => $qData['answer_3'],
+                'answer_4' => $qData['answer_4'],
+                'max_points' => $qData['max_points'],
                 'correct_answers' => json_encode($qData['correct_answers']),
             ]);
         }
@@ -333,20 +378,20 @@ class TeacherClassroomController extends Controller
 
         return response()->json([
             'message' => 'Quiz and its questions updated successfully',
-            'quiz'    => [
-                'id'           => $updatedQuiz->id,
+            'quiz' => [
+                'id' => $updatedQuiz->id,
                 'classroom_id' => $updatedQuiz->classroom_id,
-                'name'         => $updatedQuiz->name,
-                'allow_back'   => (int) $updatedQuiz->allow_back,
-                'questions'    => $updatedQuiz->questions->map(function ($q) {
+                'name' => $updatedQuiz->name,
+                'allow_back' => (int) $updatedQuiz->allow_back,
+                'questions' => $updatedQuiz->questions->map(function ($q) {
                     return [
-                        'id'              => $q->id,
-                        'question_text'   => $q->question_text,
-                        'answer_1'        => $q->answer_1,
-                        'answer_2'        => $q->answer_2,
-                        'answer_3'        => $q->answer_3,
-                        'answer_4'        => $q->answer_4,
-                        'max_points'      => $q->max_points,
+                        'id' => $q->id,
+                        'question_text' => $q->question_text,
+                        'answer_1' => $q->answer_1,
+                        'answer_2' => $q->answer_2,
+                        'answer_3' => $q->answer_3,
+                        'answer_4' => $q->answer_4,
+                        'max_points' => $q->max_points,
                         'correct_answers' => $q->correct_answers,
                     ];
                 }),
@@ -357,14 +402,14 @@ class TeacherClassroomController extends Controller
     public function editQuiz(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'quiz_id'       => ['required', 'integer'],
-            'classroom_id'  => ['required', 'integer'],
+            'quiz_id' => ['required', 'integer'],
+            'classroom_id' => ['required', 'integer'],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation error',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -372,7 +417,7 @@ class TeacherClassroomController extends Controller
             ->where('id', $request->input('quiz_id'))
             ->firstOrFail();
 
-        if ($quiz->classroom_id !== (int)$request->input('classroom_id')) {
+        if ($quiz->classroom_id !== (int) $request->input('classroom_id')) {
             return response()->json([
                 'message' => 'The provided classroom does not own this quiz.',
             ], 400);
@@ -386,19 +431,19 @@ class TeacherClassroomController extends Controller
 
         return response()->json([
             'quiz' => [
-                'id'           => $quiz->id,
+                'id' => $quiz->id,
                 'classroom_id' => $quiz->classroom_id,
-                'name'         => $quiz->name,
-                'allow_back'   => (int) $quiz->allow_back,
-                'questions'    => $quiz->questions->map(function ($q) {
+                'name' => $quiz->name,
+                'allow_back' => (int) $quiz->allow_back,
+                'questions' => $quiz->questions->map(function ($q) {
                     return [
-                        'id'              => $q->id,
-                        'question_text'   => $q->question_text,
-                        'answer_1'        => $q->answer_1,
-                        'answer_2'        => $q->answer_2,
-                        'answer_3'        => $q->answer_3,
-                        'answer_4'        => $q->answer_4,
-                        'max_points'      => $q->max_points,
+                        'id' => $q->id,
+                        'question_text' => $q->question_text,
+                        'answer_1' => $q->answer_1,
+                        'answer_2' => $q->answer_2,
+                        'answer_3' => $q->answer_3,
+                        'answer_4' => $q->answer_4,
+                        'max_points' => $q->max_points,
                         'correct_answers' => $q->correct_answers,
                     ];
                 }),
@@ -414,15 +459,17 @@ class TeacherClassroomController extends Controller
 
         $code = $validated['classroom_code'];
 
-        $studentIds = JoinClassroom::where('classroom_code', $code)
-            ->pluck('student_id')
+        $classroom = Classroom::where('classroom_code', $code)->firstOrFail();
+
+        $studentIds = Student::where('classroom_id', $classroom->id)
+            ->pluck('id_student')
             ->toArray();
 
         if (empty($studentIds)) {
             return response()->json([
                 'status' => 'success',
-                'count'  => 0,
-                'data'   => [],
+                'count' => 0,
+                'data' => [],
             ], Response::HTTP_OK);
         }
 
@@ -432,8 +479,8 @@ class TeacherClassroomController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'count'  => $results->count(),
-            'data'   => $results,
+            'count' => $results->count(),
+            'data' => $results,
         ], 201);
     }
 
@@ -441,19 +488,21 @@ class TeacherClassroomController extends Controller
     {
         $validated = $request->validate([
             'classroom_code' => ['required', 'string'],
-            'student_id'     => ['required', 'integer', 'exists:users,id'],
+            'student_id' => ['required', 'integer', 'exists:users,id'],
         ]);
 
-        $code   = $validated['classroom_code'];
+        $code = $validated['classroom_code'];
         $studentId = $validated['student_id'];
 
-        $isEnrolled = JoinClassroom::where('classroom_code', $code)
-            ->where('student_id', $studentId)
+        $classroom = Classroom::where('classroom_code', $code)->firstOrFail();
+
+        $isEnrolled = Student::where('classroom_id', $classroom->id)
+            ->where('id_student', $studentId)
             ->exists();
 
-        if (! $isEnrolled) {
+        if (!$isEnrolled) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Student is not enrolled in the specified classroom.',
             ], Response::HTTP_FORBIDDEN);
         }
@@ -468,7 +517,7 @@ class TeacherClassroomController extends Controller
         });
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => "All results for student {$studentId} in classroom '{$code}' have been deleted.",
         ], Response::HTTP_OK);
     }
@@ -476,7 +525,7 @@ class TeacherClassroomController extends Controller
     public function addNewStudent(Request $request)
     {
         $validated = $request->validate([
-            'id_student'   => 'required|unique:students,id_student',
+            'id_student' => 'required|unique:students,id_student',
             'classroom_id' => 'nullable|exists:classrooms,id',
         ]);
 
@@ -493,8 +542,8 @@ class TeacherClassroomController extends Controller
 
         try {
             $classroom = Classroom::where('classroom_code', $validated['classroom_code'])
-                                   ->with(['owner', 'students', 'quizzes'])
-                                   ->firstOrFail();
+                ->with(['owner', 'students', 'quizzes'])
+                ->firstOrFail();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'error' => "Nincs ilyen kóddal rendelkező osztály.",
@@ -503,13 +552,13 @@ class TeacherClassroomController extends Controller
 
         return response()->json([
             'data' => [
-                'id'             => $classroom->id,
-                'name'           => $classroom->name,
-                'visibility'     => $classroom->visibility,
-                'code'           => $classroom->classroom_code,
-                'owner_id'       => $classroom->owner_id,
+                'id' => $classroom->id,
+                'name' => $classroom->name,
+                'visibility' => $classroom->visibility,
+                'code' => $classroom->classroom_code,
+                'owner_id' => $classroom->owner_id,
                 'students_count' => $classroom->students()->count(),
-                'quizzes_count'  => $classroom->quizzes()->count(),
+                'quizzes_count' => $classroom->quizzes()->count(),
             ],
         ], Response::HTTP_OK);
     }
