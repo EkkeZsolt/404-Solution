@@ -1,0 +1,42 @@
+.join-classroom-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-color);
+  padding: 1.25rem;
+
+  h1 {
+    font-size: 1.875rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+    font-weight: 600;
+  }
+}
+
+.join-form {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px var(--card-shadow);
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .error-text {
+    color: var(--error-color);
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+  }
+
+  .loading-text {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+}

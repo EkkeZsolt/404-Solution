@@ -1,0 +1,89 @@
+@use '../../styles/variables' as *;
+
+.group-details-page {
+  max-width: 900px;
+  margin: $spacing-10 auto;
+  padding: $spacing-8;
+  @include card;
+
+  .group-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $spacing-8;
+
+    .group-info {
+      .classroom-code {
+        font-size: $font-size-sm;
+        color: $gray-500;
+      }
+
+      h2 {
+        margin-top: $spacing-1;
+        color: var(--text-color, $gray-800);
+      }
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: $spacing-3;
+      justify-content: flex-end;
+
+      button {
+        padding: $spacing-3 $spacing-4;
+        border-radius: $border-radius;
+        border: none;
+        cursor: pointer;
+        font-weight: $font-weight-medium;
+        transition: all $transition-fast;
+      }
+
+      .join-btn {
+        background: $warning;
+        color: $gray-800;
+
+        &:hover {
+          background: $warning-light;
+        }
+      }
+
+      .new-quiz-btn {
+        @include btn-primary;
+      }
+    }
+  }
+
+  h3 {
+    margin-bottom: $spacing-4;
+    color: var(--text-color, $gray-800);
+  }
+
+  .quiz-list {
+    list-style: none;
+    padding: 0;
+
+    .quiz-item {
+      display: flex;
+      justify-content: space-between;
+      background: var(--hover-bg, $gray-100);
+      padding: $spacing-3 $spacing-4;
+      border-radius: $border-radius;
+      margin-bottom: $spacing-2;
+      cursor: pointer;
+      transition: background $transition-fast;
+
+      &:hover {
+        background: $gray-200;
+      }
+    }
+  }
+}
+
+.quiz-row {
+  cursor: pointer;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: var(--hover-bg, $gray-100);
+  }
+}
