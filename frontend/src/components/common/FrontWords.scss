@@ -1,0 +1,83 @@
+/* --- FrontWords (alsó szekció) stílusai --- */
+
+.frontWords-section {
+  position: relative;
+  padding: 4rem 0; // Felső és alsó kitöltés
+  color: #f0f0f0; // Világosabb szöveg az sötét háttérre
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), // Sötét overlay a háttéren
+    url('/images/abstract-tech-background.jpg') no-repeat center center / cover; // Helyettesítsd egy valós képpel
+  // Fontos: a fenti url() helyére tegyél be egy olyan képet,
+  // amit a public/images mappába raktál (pl. abstract-tech-background.jpg)!
+  // A generált képeknél (pl. az 1. slide) használt kép is jó lehet.
+
+  /* Ha szeretnél egy kis feljebb csúszást a kép alá: */
+  margin-top: -50px; // Ezzel a Hero carousel alá csúszik
+  padding-top: 60px; // Kompenzáljuk a padding-gel
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.frontWords-container {
+  display: flex;
+  flex-wrap: wrap; // Ha sok kártya van, törjön sorba
+  justify-content: center; // Középre igazítja a kártyákat
+  gap: 24px; // Távolság a kártyák között
+  max-width: 1200px; // Maximális szélesség a tartalomnak
+  margin: 0 auto; // Középre igazítja a konténert
+  padding: 0 1.5rem; // Kicsi oldalsó padding kisebb képernyőkön
+}
+
+.frontWords-card {
+  background: rgba(40, 40, 40, 0.85); // Sötét, áttetsző háttér
+  border: 1px solid rgba(80, 80, 80, 0.5); // Finom keret
+  border-radius: 12px; // Lekerekített sarkok
+  padding: 1.8rem 2rem;
+  max-width: 380px; // Maximális szélesség egy kártyának
+  flex: 1 1 300px; // Flex tulajdonság a reszponzivitásért
+  text-align: center; // Középre igazítja a szöveget
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); // Finom árnyék
+  backdrop-filter: blur(8px); // A 'frosted glass' effekt
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; // Animációk
+
+  &:hover {
+    transform: translateY(-5px); // Kiemelkedik hoverre
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+  }
+
+  h3 {
+    font-size: 1.6rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #ff9900; // Egy kiemelő szín a címnek
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
+    color: #e0e0e0;
+  }
+}
+
+/* --- Reszponzív módosítások --- */
+@media (max-width: 768px) {
+  .frontWords-section {
+    padding: 3rem 0;
+    margin-top: -30px; // Kisebb negatív margó
+    padding-top: 40px;
+  }
+
+  .frontWords-card {
+    padding: 1.5rem;
+    max-width: 90%; // Kisebb képernyőn jobban kitölti a helyet
+  }
+  
+  .frontWords-card h3 {
+    font-size: 1.4rem;
+  }
+}
