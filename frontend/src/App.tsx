@@ -1,52 +1,50 @@
 import './App.scss';
 import './index.scss';
-import Hero from './hero/Hero';
-import LoginPage from './loginpages/login';
-import RegisterPage from './loginpages/register';
-import CreateClassroom from './TanarFelulet/CreateClassroom';
-import GroupDetails from './TanarFelulet/GroupDetails';
-import TanarFelulet from "./TanarFelulet/tanarfelulet";
-import DiakFelulet from "./DiakFelulet/diakfelulet";
-import JoinClassroom from "./DiakFelulet/JoinClassroom";
-import CreateQuiz from "./TanarFelulet/CreateQuiz";
-import QuizNezet from "./TanarFelulet/QuizNezet";
-import QuizUserResult from "./TanarFelulet/ReszletDiakNezet";
-import QuizWrite from "./DiakFelulet/QuizWrite";
-import { Routes, Route, useNavigate} from 'react-router-dom';
-import FrontWords from './front-words/FrontWords'; // <-- Fontos import!
+import Hero from './components/common/Hero';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import CreateClassroom from './pages/teacher/CreateClassroom';
+import ClassroomDetails from './pages/teacher/ClassroomDetails';
+import TeacherDashboard from "./pages/teacher/TeacherDashboard";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import JoinClassroom from "./pages/student/JoinClassroom";
+import CreateQuiz from "./pages/teacher/CreateQuiz";
+import QuizPreview from "./pages/teacher/QuizPreview";
+import StudentResultDetail from "./pages/teacher/StudentResultDetail";
+import QuizRunner from "./pages/student/QuizRunner";
+import ClassroomView from "./pages/student/ClassroomView";
+import { Routes, Route } from 'react-router-dom';
+import FrontWords from './components/common/FrontWords';
+import Layout from './components/common/Layout';
 
 function App() {
-  const navigate = useNavigate();
   return (
     <Routes>
-      <Route path="/" element={
-        <>
-      <header className="site-header">
-        <h1 className="header-title">Kezdőlap</h1>
-        <nav className="auth">
-          <button className="auth-btn" onClick={() => navigate("/login")}>Bejelentkezés/Regisztráció</button>
-        </nav>
-      </header>
-
-      <main>
-        <Hero />
-        <FrontWords /> {/* <-- Hozzáadva a második szekció */}
-      </main>
-    </>
-    }
-    />
-      <Route path="/Login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/CreateClassroom" element={<CreateClassroom />} />
-      <Route path="/GroupDetails/:id" element={<GroupDetails />} />
-      <Route path="/tanarFelulet" element={<TanarFelulet />} />
-      <Route path="/diakFelulet" element={<DiakFelulet />} />
-      <Route path="/JoinClassroom" element={<JoinClassroom />} />
-      <Route path="/QuizNezet" element={<QuizNezet />} />
-      <Route path="/group/:groupId/quiz/create" element={<CreateQuiz />} />
-      <Route path="/quiz/:quizId/user/:userId" element={<QuizUserResult />} />
-      <Route path="/quiz/:quizId/quiz/:quizId" element={<QuizWrite />} />
-      </Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={
+          <>
+            <main>
+              <Hero />
+              <FrontWords />
+            </main>
+          </>
+        }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/teacher" element={<TeacherDashboard />} />
+        <Route path="/teacher/create-classroom" element={<CreateClassroom />} />
+        <Route path="/teacher/classroom/:id" element={<ClassroomDetails />} />
+        <Route path="/teacher/classroom/:groupId/quiz/create" element={<CreateQuiz />} />
+        <Route path="/teacher/quiz/:quizId" element={<QuizPreview />} />
+        <Route path="/teacher/quiz/:quizId/edit" element={<CreateQuiz />} />
+        <Route path="/teacher/quiz/:quizId/student/:userId" element={<StudentResultDetail />} />
+        <Route path="/student" element={<StudentDashboard />} />
+        <Route path="/student/join-classroom" element={<JoinClassroom />} />
+        <Route path="/student/classroom/:id" element={<ClassroomView />} />
+        <Route path="/student/quiz/:id" element={<QuizRunner />} />
+      </Route>
+    </Routes>
   );
 }
 
