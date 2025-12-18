@@ -1,14 +1,14 @@
 # Szoftver Tesztelési Jegyzőkönyv - Backend
 
-**Dátum:** 2025. december 16.
+**Dátum:** 2025. december 18.
 **Tesztelő:** Antigravity AI
 **Projekt:** 404-Solution / Backend
-**Tesztelt Verzió:** N/A (Tesztelés nem kezdődött el)
+**Tesztelt Verzió:** `dev` ág (Environment configured)
 
 ## 1. Tesztelési Környezet
 - **Operációs Rendszer:** Windows
-- **Keretrendszer:** Laravel (PHP)
-- **Tervezett Eszközök:** PHP, Composer, PHPUnit
+- **Keretrendszer:** Laravel (PHP 8.3.28)
+- **Eszközök:** Composer, PHPUnit (beépített SQLite :memory: adatbázissal)
 
 ## 2. Tesztelési Célok
 A backend API végpontok és az üzleti logika helyességének ellenőrzése automatizált tesztekkel.
@@ -20,25 +20,26 @@ A backend API végpontok és az üzleti logika helyességének ellenőrzése aut
 
 | Azonosító | Teszt Eset | Leírás | Elvárt Eredmény | Tényleges Eredmény | Státusz |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **TC-B01** | Környezet Ellenőrzése | `php --version` és `composer --version` futtatása. | Érvényes verziószámok visszakapása. | `The term 'php' is not recognized` / `The term 'composer' is not recognized`. | ❌ MEGHIÚSULT |
-| **TC-B02** | Függőségek Telepítése | `composer install` futtatása. | `vendor` mappa létrejötte. | **BLOKKOLVA** (Nincs Composer). | ⚠️ NEMFUTOTT |
-| **TC-B03** | Unit Tesztek | `php artisan test` futtatása. | Tesztek sikeres lefutása. | **BLOKKOLVA** (Nincs PHP környezet). | ⚠️ NEMFUTOTT |
+| **TC-B01** | Környezet Ellenőrzése | `php -v` és `composer -v` futtatása. | Érvényes verziószámok. | PHP 8.3.28, Composer elérhető. | ✅ SIKERES |
+| **TC-B02** | Függőségek Telepítése | `composer install` futtatása. | `vendor` mappa létrejön, `.env` file beállítva. | Sikerült, `.env` létrehozva (APP_KEY generálva). | ✅ SIKERES |
+| **TC-B03** | Unit Tesztek | `php artisan test` - Unit Suite | Egységtesztek futása. | `Tests\Unit\ExampleTest` Passed. | ✅ SIKERES |
+| **TC-B04** | Feature Tesztek | `php artisan test` - Feature Suite | Funkcionális tesztek futása. | `Tests\Feature\ExampleTest` Failed (404 on `/`). | ❌ HELYES MŰKÖDÉS (Várt hiba) |
 
-## 4. Feltárt Hibák és Akadályok
+## 4. Részletes Eredmények
 
-### 4.1. Kritikus Környezeti Hiba
-- **Leírás:** A tesztkörnyezetben (Windows) nem található globálisan telepített PHP értelmező és Composer csomagkezelő.
-- **Hatás:** Semmilyen backend kód nem futtatható vagy tesztelhető.
-- **Diagnosztika:**
-  - A felhasználó jelezte a Laragon telepítését, de a környezeti változók (PATH) frissítése vagy a VS Code újraindítása nem történt meg, vagy nem volt sikeres.
-  - A rendszer nem találja a `php.exe` fájlt a parancssorból.
+### 4.1. Unit Tesztek
+- **ExampleTest**: Sikeresen lefutott (`true is true`).
+
+### 4.2. Feature Tesztek
+- **ExampleTest**: `Expected 200, Received 404`.
+  - **Ok:** A `routes/web.php` fájl üres, nincs definiálva a főoldal (`/`) útvonal. Mivel ez egy API backend, ez a viselkedés **elfogadható**, de a tesztet frissíteni vagy törölni kellene.
 
 ## 5. Összegzés
-A backend modul tesztelése **MEGHIÚSULT** kritikus környezeti hiányosságok miatt. A kód minőségéről és működéséről jelenleg nem áll rendelkezésre információ.
+A backend tesztelési környezet **SIKERESEN HELYREÁLLT**. A kritikus környezeti hibák (hiányzó PHP/Composer) elhárultak.
+A rendszer képes futtatni a teszteket. A jelenlegi "hiba" (`TC-B04`) nem a rendszer hibája, hanem a kódbázis (üres `web.php`) és a generált boilerplate teszt inkonzisztenciája.
 
 ## 6. Javasolt Lépések (Action Items)
-1.  **Környezet Javítása:**
-    - A Laragon PHP mappájának (pl. `C:\laragon\bin\php\php-8.x...`) hozzáadása a Windows `Path` környezeti változójához.
-    - VS Code teljes újraindítása.
-2.  **Újraellenőrzés:**
-    - A `php --version` parancs sikeres futtatása után a tesztelési folyamat újraindítása.
+1.  **Tesztek Aktualizálása:**
+    - A `Tests\Feature\ExampleTest` törlése vagy módosítása, hogy egy létező API végpontot (pl. `/api/login` - bár ez POST) teszteljen, vagy csak a health check-et.
+2.  **További Tesztek Írása:**
+    - Mivel csak példa tesztek vannak, érdemes lenne valós teszteket írni a kontrollerekhez (`AuthController`, `TeacherClassroomController`, stb.).
